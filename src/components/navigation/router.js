@@ -7,17 +7,17 @@ import {
     useParams,
     Redirect
 } from "react-router-dom";
-// import Navigation from '../navigation/navigation'
+import Navigation from '../navigation/navigation'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Routes from './routes'
 import { useSelector, useDispatch } from 'react-redux'
 const drawerWidth = 240;
+
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
     appBar: {
-        background: '#2f3640',
         transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -68,26 +68,25 @@ const useStyles = makeStyles((theme) => ({
         }),
         marginLeft: 0,
     },
-
 }));
-
-function App() {
+export default function LoginPg() {
     const classes = useStyles();
-     const { user_id } = useParams()
-     const Dispatch = useDispatch();
+
     const [open, setOpen] = React.useState(false);
-
-    return <Router>
-        <div className={classes.root}>
-            {/* <Navigation /> */}
-            <main className={clsx(classes.content, { [classes.contentShift]: open,})}>
-                <div className={classes.drawerHeader} />
-                {Routes.map((value, index) => {
-                    return <Route key={index} exact={value.exact} path={value.path} component={value.component} />
-                })}
-            </main>
-        </div>
-    </Router>
+    console.log('hehehe')
+    return <div className="App">
+        <Router>
+            <div className={classes.root}>
+                <Navigation />
+                <div
+                  style={{width:'100%',marginTop:80}}
+                >
+                    {/* <div className={classes.drawerHeader} /> */}
+                    {Routes.map((value, index) => {
+                        return <Route key={index} exact={value.exact} path={value.path} component={value.component} />
+                    })}
+                </div>
+            </div>
+        </Router>
+    </div>
 }
-
-export default App;

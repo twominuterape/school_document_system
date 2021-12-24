@@ -6,6 +6,7 @@ import './App.css';
 // import LoadingScreen from './components/splash/loadingscreen'
 import Routing from './components/navigation/router'
 import Loginpg from './components/loginpg/login'
+import AddDocs from './components/elements/addDocs/indexDocs'
 import {
   HashRouter ,
   Route,

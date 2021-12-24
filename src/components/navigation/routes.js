@@ -4,7 +4,7 @@ import {
     Route,
     Redirect
 } from "react-router-dom";
-
+import AddDocuments from '../elements/addDocs/indexDocs'
 
 // import Index from '../landingpg'
 import reqDocuments from '../elements/students/request'
@@ -20,6 +20,12 @@ const routes = [
         exact: true,
         component: reqDocuments,
         page_name: 'Documents Request'
+    },
+    {
+        path: '/wis/addDocs',
+        exact: false,
+        component: AddDocuments,
+        page_name: 'Adding Documents'
     },
 ]
 export default routes;
