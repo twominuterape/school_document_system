@@ -8,8 +8,10 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.19.2",
     "chart.js": "^3.6.0",
     "classnames": "^2.3.1",
+    "material-ui-dropzone": "^3.5.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
@@ -19,6 +21,7 @@
     "react-scripts": "5.0.0",
     "redux": "4.1.2",
     "simplebar-react": "^2.3.6",
+    "sweetalert2": "^11.3.4",
     "web-vitals": "^2.1.2"
   },
   "scripts": {

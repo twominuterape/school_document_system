@@ -8,7 +8,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import TextField from '@material-ui/core/TextField';
+import {Card,CardContent, Grid } from '@material-ui/core';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170 },
   { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
@@ -33,7 +36,7 @@ const columns = [
     align: 'right',
     format: (value) => value.toFixed(2),
   },
-  
+
 ];
 
 function createData(name, code, population, size) {
@@ -64,7 +67,7 @@ const useStyles = makeStyles({
     width: '100%',
   },
   container: {
-    maxHeight: 440,
+    maxHeight: 400,
   },
 });
 
@@ -82,26 +85,47 @@ export default function StickyHeadTable() {
     setPage(0);
   };
   return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
+    <Card className={classes.root}>
+      <CardContent>
+
+     
+      <Grid container spacing={1}>
+    <Grid item xs={12} md={4}>
+    <TextField style={{ width: '100%' }} size='small' label='Search' variant='outlined' />
+    </Grid>
+    <Grid item xs={12} md={12}>
+  
+    <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
+              <TableCell
+              >
+              
+              </TableCell>
               {columns.map((column) => (
+
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth}}
                 >
                   {column.label}
                 </TableCell>
               ))}
+
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableCell
+                    style={{ display: 'flex', justifyContent: 'flex-start' }}
+
+                  >
+                    <FolderOpenIcon style={{cursor:'pointer',color:'#ed9e21'}} />
+                  </TableCell>
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
@@ -110,6 +134,7 @@ export default function StickyHeadTable() {
                       </TableCell>
                     );
                   })}
+
                 </TableRow>
               );
             })}
@@ -125,6 +150,11 @@ export default function StickyHeadTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </Grid>
+      </Grid>
+      </CardContent>
+    </Card>
+     
+     
   );
 }
