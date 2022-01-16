@@ -90,7 +90,7 @@ export default function LoginPg() {
     const History = useHistory()
     return (
         <React.Fragment>
-            <Container>
+            <>
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
                     <Link color="inherit" href="/">Home Page</Link>
                     <Typography color="textPrimary">Student List</Typography>
@@ -187,7 +187,7 @@ export default function LoginPg() {
                         </Button>
                     </DialogActions>
                 </Dialog>
-            </Container>
+            </>
         </React.Fragment>
     );
 }

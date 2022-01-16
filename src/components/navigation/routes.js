@@ -23,19 +23,19 @@ const routes = [
         page_name: 'Documents Request'
     },
     {
-        path: '/wis/addDocs',
+        path: '/wis/documents',
         exact: false,
         component: AddDocuments,
         page_name: 'Adding Documents'
     },
     {
-        path: '/wis/fileStorage',
+        path: '/wis/folder',
         exact: false,
         component: FileStorage,
         page_name: 'File Storage'
     },
     {
-        path: '/wis/fileStorageList',
+        path: '/wis/fileStorageList/:folderName/:category_id',
         exact: false,
         component: FileStorageList,
         page_name: 'File Storage List'

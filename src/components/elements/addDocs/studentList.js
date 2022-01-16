@@ -12,6 +12,14 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import TextField from '@material-ui/core/TextField';
 import {Card,CardContent, Grid } from '@material-ui/core';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import {
+  HashRouter as Router,
+  Route,
+  useParams,
+  Redirect,
+  Link as NewLink,
+  useHistory
+} from "react-router-dom";
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170 },
   { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
@@ -75,7 +83,7 @@ export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  const history = useHistory()
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -100,6 +108,7 @@ export default function StickyHeadTable() {
           <TableHead>
             <TableRow>
               <TableCell
+              style={{backgroundColor: '#b23232', color: '#fff'}}
               >
               
               </TableCell>
@@ -108,7 +117,7 @@ export default function StickyHeadTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth}}
+                  style={{ minWidth: column.minWidth,backgroundColor: '#b23232', color: '#fff'}}
                 >
                   {column.label}
                 </TableCell>
@@ -119,7 +128,9 @@ export default function StickyHeadTable() {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow onClick={()=>{
+                  history.push('/wis/folder')
+                }} hover role="checkbox" tabIndex={-1} key={row.code}>
                   <TableCell
                     style={{ display: 'flex', justifyContent: 'flex-start' }}
 

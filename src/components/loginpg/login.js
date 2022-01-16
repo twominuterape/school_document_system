@@ -27,6 +27,8 @@ import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import { useParams,useHistory } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
+let width_window= window.innerWidth;
+let height_window = window.innerHeight;
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -62,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
   },
 }));
+console.log(width_window)
 export default function LoginPg() {
   const classes = useStyles();
   const History = useHistory()
@@ -69,10 +72,13 @@ export default function LoginPg() {
     <React.Fragment>
       <Container>
         <div style={{ width: '100%', height: '100%',  }}>
-          <div  style={{ display: 'flex', justifyContent: 'center', alignContent: 'center', flexDirection: 'row' }}>
-            <div  style={{width:'55%',height:300}}>
+          <div style={{displa:'flex',height:height_window*0.25,width:'100%'}}>
+
+          </div>
+          <div  style={{ display: 'flex', flex:1,justifyContent: 'center', alignContent: 'center', flexDirection: 'row' }}>
+            <div  style={{width:width_window <600 ?'100%':'55%',height:300}}>
               <Grid container>
-                <Grid item xs={7}>
+                <Grid item xs={width_window <600 ?12:7}>
                   <Card style={{height: 300, width: '100%',borderRadius:0}}>
                     <CardContent>
                       <div style={{ backgroundColor: '#fff', borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}>
@@ -126,14 +132,19 @@ export default function LoginPg() {
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={5}>
-                  <Card style={{height: 300, width: '100%',backgroundColor: '#b33939',borderRadius:0}}>
-                    <CardContent>
-                      <div style={{borderTopRightRadius:10,borderBottomRightRadius:10 }}>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                {width_window > 600?
+                 <Grid item xs={5}>
+                 <Card style={{height: 300, width: '100%',backgroundColor: '#b33939',borderRadius:0}}>
+                   <CardContent>
+                     <div style={{borderTopRightRadius:10,borderBottomRightRadius:10 }}>
+                     </div>
+                   </CardContent>
+                 </Card>
+               </Grid>
+                :undefined
+
+                }
+               
               </Grid>
             </div>
           </div>

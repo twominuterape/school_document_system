@@ -21,14 +21,18 @@ import { getData } from '../../api/api'
 import CloseIcon from '@material-ui/icons/Close';
 import axios from "axios"
 import Swal from 'sweetalert2'
-import { loading } from '../loading'
+import { loading_page } from '../loading'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-
+import {
+    useHistory
+  } from "react-router-dom";
+  import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+let width = window.innerWidth;
 const columns = [
     { id: 'name', label: 'Name', minWidth: 170 },
     { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
@@ -92,7 +96,7 @@ export default function FileStorage() {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
-
+    const history = useHistory()
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const handleChangePage = (event, newPage) => {
@@ -141,14 +145,7 @@ export default function FileStorage() {
     const CreateFolder = (e) => {
         e.preventDefault()
         handleClose()
-        Swal.fire({
-            // title: 'Loading',
-            html: 'Loading',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading()
-            },
-        })
+        loading_page()
         getData('addingDocs/AddFolderName', { name: state.folderName }).then((res) => {
             Swal.close()
             if (res.status) {
@@ -190,7 +187,7 @@ export default function FileStorage() {
                 Swal.showLoading()
             },
         })
-        getData('addingDocs/getCategoryList').then((res) => {
+        getData('addingDocs/getCategoryList',{category_type:'Folder Name'}).then((res) => {
             Swal.close()
             setState(prev => ({ ...prev, folderData: res.result.data }))
         })
@@ -262,19 +259,27 @@ export default function FileStorage() {
            console.log(res)
        })
     }
+    const getFiles = (data,file_id) =>{
+        history.push('/wis/fileStorageList/'+data+'/'+file_id)
+        
+    }
 
     return (
         <React.Fragment>
-            <Container>
+            <>
                 {/* <Loading loading={loading}/> */}
+               
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
+                
+                <Link color="inherit" href="/#/wis/documents">Back</Link>
+            
                     <Link color="inherit" href="/">Home Page</Link>
-                    <Typography color="textPrimary">Files</Typography>
+                    <Typography color="textPrimary">Folder</Typography>
                 </Breadcrumbs>
 
                 <Grid container spacing={1}>
                     <Grid item xs={12} md={1}>
-                        <Button startIcon={<AddIcon />} onClick={handleClickOpen} style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
+                        <Button startIcon={<AddIcon />} onClick={handleClickOpen} style={{ width: width<600?'100%':undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
                             Folder
                         </Button>
                     </Grid>
@@ -297,8 +302,14 @@ export default function FileStorage() {
                                     {state.folderData.map((val, index) => {
                                         return <Grid container key={index} item xs={12} md={2} justify='center'>
                                             <Grid container item xs={12} md={12} justify='center'>
-                                                <div style={{ position: 'relative', width: 120, height: 120 }}>
-                                                    <IconButton onClick={() => deleteFolder(val.category_id)} style={{ position: 'absolute', top: 15, right: 3 }} aria-label="delete" className={classes.margin} size="small">
+                                                <div style={{ position: 'relative', width: 120, height: 120,cursor:'pointer' }} onClick={()=>{
+                                                    getFiles(val.category_name,val.category_id)
+                                                }}>
+                                                    <IconButton onClick={() => {
+                                                      
+                                                            deleteFolder(val.category_id)
+                                                      
+                                                        }} style={{ display:val.with_data?'none':undefined ,position: 'absolute', top: 15, right: 3,cursor:'pointer' }} aria-label="delete" className={classes.margin} size="small">
                                                         <CloseIcon fontSize="inherit" />
                                                     </IconButton>
                                                     <img src={folder} style={{ width: 120, height: 120 }} />
@@ -338,16 +349,16 @@ export default function FileStorage() {
                             <DialogContentText id="alert-dialog-slide-description">
                                 <Grid container spacing={1}>
                                     <Grid item xs={12} md={12}>
-                                        <TextField style={{ width: '100%' }} name='folderName' onChange={onChangeText} required id="standard-required" label="Name" value={state.folderName} />
+                                        <TextField style={{ width: '100%',textTransform:'uppercase' }} name='folderName' onChange={onChangeText} required id="standard-required" label="Name" value={state.folderName} />
                                     </Grid>
                                     <Grid item xs={12} md={12}>
-                                        <DropzoneArea
+                                        {/* <DropzoneArea
                                         className={classes.drop_zone_area}
                                         acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values"]}
                                         onChange={handleChangeFile}
                                         showFileNames={true}
                                         maxFileSize={500800000}
-                                    />
+                                    /> */}
                                     </Grid>
 
                                 </Grid>
@@ -366,7 +377,7 @@ export default function FileStorage() {
                 <Dialog
                     fullWidth
                     maxWidth="xs"
-                    open={open}
+                    // open={open}
                     TransitionComponent={Transition}
                     keepMounted
                     onClose={handleClose}
@@ -410,7 +421,7 @@ export default function FileStorage() {
                   
                 </Dialog>
 
-            </Container>
+            </>
         </React.Fragment>
 
 
