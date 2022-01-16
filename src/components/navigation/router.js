@@ -78,9 +78,7 @@ export default function LoginPg() {
         <Router>
             <div className={classes.root}>
                 <Navigation />
-                <div
-                  style={{width:'100%',marginTop:80}}
-                >
+                <div style={{width:'100%',marginTop:80}}>
                     {/* <div className={classes.drawerHeader} /> */}
                     {Routes.map((value, index) => {
                         return <Route key={index} exact={value.exact} path={value.path} component={value.component} />

@@ -7,7 +7,7 @@ import {
 import AddDocuments from '../elements/addDocs/indexDocs'
 
 // import Index from '../landingpg'
-import reqDocuments from '../elements/students/request'
+import reqDocuments from '../elements/students/indexReq'
 const routes = [
     // {
     //     path: '/home',

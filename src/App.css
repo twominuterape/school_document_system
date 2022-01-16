@@ -34,6 +34,11 @@
   box-shadow:  20px 20px 60px #bebebe,
               -20px -20px 60px #ffffff;
 }
+.containerDialog {
+  border-left-style: solid;
+  border-left-width: 5px; 
+  border-color: #c23616;
+}
 
 @keyframes App-logo-spin {
   from {
