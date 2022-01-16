@@ -8,7 +8,7 @@ import AddDocuments from '../elements/addDocs/indexDocs'
 import FileStorage from '../elements/addDocs/fileList'
 import FileStorageList from '../elements/addDocs/fileListTable'
 // import Index from '../landingpg'
-import reqDocuments from '../elements/students/request'
+import reqDocuments from '../elements/students/indexReq'
 const routes = [
     // {
     //     path: '/home',
