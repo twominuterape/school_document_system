@@ -4,9 +4,9 @@ import {
     Route,
     Redirect
 } from "react-router-dom";
-import AddDocuments from '../elements/addDocs/indexDocs'
-import FileStorage from '../elements/addDocs/fileList'
-import FileStorageList from '../elements/addDocs/fileListTable'
+import AddDocuments from '../elements/admin/addDocs/indexDocs'
+import FileStorage from '../elements/admin/addDocs/fileList'
+import FileStorageList from '../elements/admin/addDocs/fileListTable'
 // import Index from '../landingpg'
 import reqDocuments from '../elements/students/indexReq'
 const routes = [

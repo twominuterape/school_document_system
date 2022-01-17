@@ -19,14 +19,14 @@ import CallMadeIcon from '@material-ui/icons/CallMade';
 import axios from "axios"
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
-import { getData } from '../../api/api'
+import { getData } from '../../../api/api'
 import Swal from 'sweetalert2'
 import {
     useHistory,
     useParams,
     Link as NewLink
 } from "react-router-dom";
-import { loading_page } from '../loading'
+import { loading_page } from '../../loading'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { Update } from '@material-ui/icons';

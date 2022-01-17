@@ -17,11 +17,11 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import folder from './folder.jpg'
 import AddIcon from '@material-ui/icons/Add';
 import { DropzoneArea } from 'material-ui-dropzone'
-import { getData } from '../../api/api'
+import { getData } from '../../../api/api'
 import CloseIcon from '@material-ui/icons/Close';
 import axios from "axios"
 import Swal from 'sweetalert2'
-import { loading_page } from '../loading'
+import { loading_page } from '../../loading'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
