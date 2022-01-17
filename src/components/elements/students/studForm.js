@@ -45,6 +45,8 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormLabel from '@material-ui/core/FormLabel';
+import { useDispatch,useSelector } from 'react-redux'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -92,10 +94,11 @@ const helperTextStyles = makeStyles(theme => ({
       }
     }
   }));
-export default function StudentView() {
+export default function StudentView({warningadmiss}) {
     const classes = useStyles();
     const helperTestClasses = helperTextStyles();
     const History = useHistory()
+    const [refreshs, setrefreshs] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [docstype, setdocstype] = React.useState([
         {type:'Diploma'},
@@ -145,31 +148,66 @@ export default function StudentView() {
         {type:'CTHM'},
         {type:'SEBA'},
     ]);
+
+    const [admissionType, setadmissionType] = React.useState([
+        {type:'Junior High School Report Card (JHS Form 138)'},
+        {type:'Senior High School Report Card (SHS Form 138)'},
+        {type:'Transcript of Records (for transferees)'},
+    ]);
     const [age, setAge] = React.useState('');
     const theme = useTheme();
+    const Dispatch = useDispatch();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
     const [admissionVal, setadmissionVal] = React.useState('Junior High School Report Card (JHS Form 138)');
 
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
+    const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
 
 
-    const handleChangeTor = (event) => {
-        setAge(event.target.value);
+    const onChange = (event) => {
+        Dispatch({
+            type:'passStudForm',
+            studentdetails:{
+                [event.target.name]: event.target.value
+            },
+        })
     };
+
+    const handleGraduate = (event) => {
+        Dispatch({
+            type:'passStudForm',
+            studentdetails:{
+                'gradStatus': event.target.value
+            },
+        })
+    };
+
+    const handleDepartment = (event) => {
+        Dispatch({
+            type:'passStudForm',
+            studentdetails:{
+                'department': event.target.value
+            },
+        })
+    };
+
 
     const handleAdmission = (event) => {
-        setadmissionVal(event.target.value);
+        if(student_Input.admission === event.target.name){
+            Dispatch({
+                type:'passStudForm',
+                studentdetails:{
+                    'admission': ""
+                },
+            })
+        }else{
+            Dispatch({
+                type:'passStudForm',
+                studentdetails:{
+                    'admission': event.target.name
+                },
+            })
+        }
       };
 
     useEffect(()=>{
@@ -181,6 +219,13 @@ export default function StudentView() {
             <Grid item xs={12} md={6} >
                 <Typography variant="h4" >Student/Alumni Information:</Typography>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16}}> Please fill-out the required information correctly.</Typography>
+                {warningadmiss === true &&
+                    <Card  style={{width:'100%',backgroundColor:'rgba(179, 57, 57,.9)',marginTop:10,marginBottom:10}}>
+                        <CardContent >
+                            <Typography style={{fontSize:16,marginTop:5,color:'#f5f6fa'}} >Admission section is required. </Typography>
+                        </CardContent>
+                    </Card>
+                }
                 <Grid container spacing={1} style={{marginTop:10}}>
                     <Grid item xs={12} md={12} >
                         <TextField
@@ -188,6 +233,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.studnum}
+                            name="studnum"
+                            onChange={onChange}
                             FormHelperTextProps={{ classes: helperTestClasses }}
                             label="Student Number:"
                             color="green"
@@ -199,6 +247,9 @@ export default function StudentView() {
                         <TextField
                             style={{width:'100%'}}
                             size={'small'}
+                            value={student_Input.lname}
+                            onChange={onChange}
+                            name="lname"
                             id="outlined-helperText"
                             required={true}
                             label="Last Name:"
@@ -211,6 +262,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.fname}
+                            onChange={onChange}
+                            name="fname"
                             label="First Name:"
                             variant="outlined"
                             />
@@ -221,6 +275,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.mname}
+                            onChange={onChange}
+                            name="mname"
                             label="Middle Name:"
                             variant="outlined"
                             />
@@ -231,6 +288,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.entry_year}
+                            onChange={onChange}
+                            name="entry_year"
                             FormHelperTextProps={{ classes: helperTestClasses }}
                             label="Entry Year & Semester:"
                             helperText="Please follow this format: AY 2020-2021, 1st Semester"
@@ -243,6 +303,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.last_attn}
+                            onChange={onChange}
+                            name="last_attn"
                             FormHelperTextProps={{ classes: helperTestClasses }}
                             label="Last Attendance at WIS:"
                             helperText="Please follow this format: AY 2020-2021, 1st Semester"
@@ -255,8 +318,8 @@ export default function StudentView() {
                             <Select
                                 labelId="demo-simple-select-outlined-label"
                                 id="demo-simple-select-outlined"
-                                value={age}
-                                onChange={handleChangeTor}
+                                value={student_Input.gradStatus}
+                                onChange={handleGraduate}
                                 label="Graduate/Undergraduate? ">
                                 <MenuItem value="">
                                     <em>None</em>
@@ -273,6 +336,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.year_graduated}
+                            onChange={onChange}
+                            name="year_graduated"
                             label="Year Graduated:"
                             FormHelperTextProps={{ classes: helperTestClasses }}
                             helperText="For undergraduate applicants, please indicate N/A"
@@ -285,6 +351,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.degree}
+                            onChange={onChange}
+                            name="degree"
                             FormHelperTextProps={{ classes: helperTestClasses }}
                             label="Degree Program: "
                             helperText="Please write your course in this format: BS Information Technology (BSIT)"
@@ -297,6 +366,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.major}
+                            onChange={onChange}
+                            name="major"
                             label="Major: "
                             FormHelperTextProps={{ classes: helperTestClasses }}
                             helperText="For degree programs without specialization/major, please indicate N/A"
@@ -309,8 +381,8 @@ export default function StudentView() {
                             <Select
                                 labelId="demo-simple-select-outlined-label"
                                 id="demo-simple-select-outlined"
-                                value={age}
-                                onChange={handleChangeTor}
+                                value={student_Input.department}
+                                onChange={handleDepartment}
                                 label="Graduate/Undergraduate? ">
                                 <MenuItem value="">
                                     <em>None</em>
@@ -325,6 +397,9 @@ export default function StudentView() {
                         <TextField
                             style={{ width: '100%' }}
                             required={true}
+                            value={student_Input.address}
+                            onChange={onChange}
+                            name="address"
                             id="outlined-multiline-static"
                             label="Permanent Address:"
                             multiline
@@ -335,7 +410,10 @@ export default function StudentView() {
                         <TextField
                             style={{ width: '100%' }}
                             size={'small'}
+                            value={student_Input.elem_school}
                             required={true}
+                            onChange={onChange}
+                            name="elem_school"
                             id="outlined-helperText"
                             label="Elementary School:"
                             variant="outlined"/>
@@ -344,8 +422,11 @@ export default function StudentView() {
                         <TextField
                             style={{width:'100%'}}
                             size={'small'}
+                            value={student_Input.elem_year}
                             id="outlined-helperText"
                             required={true}
+                            onChange={onChange}
+                            name="elem_year"
                             label="Year Graduated (Elementary): "
                             variant="outlined"
                             />
@@ -356,6 +437,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.high_school}
+                            onChange={onChange}
+                            name="high_school"
                             label="High School: "
                             variant="outlined"
                             />
@@ -366,6 +450,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.high_year}
+                            onChange={onChange}
+                            name="high_year"
                             label="Year Graduated (High School): "
                             variant="outlined"
                             />
@@ -376,26 +463,38 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.tertiary}
+                            onChange={onChange}
+                            name="tertiary"
                             label="Tertiary: (If Transferee)"
                             variant="outlined"
                             />
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}}>
+                        <Divider style={{marginBottom:10}}/>
                         <FormControl component="fieldset" required={true}>
                             <FormLabel component="legend">Basis of Admission</FormLabel>
-                            <RadioGroup aria-label="gender" name="gender1" value={admissionVal} onChange={handleAdmission}>
-                                <FormControlLabel value="Junior High School Report Card (JHS Form 138)" control={<Radio />} label="Junior High School Report Card (JHS Form 138)" />
-                                <FormControlLabel value="Senior High School Report Card (SHS Form 138)" control={<Radio />} label="Senior High School Report Card (SHS Form 138)" />
-                                <FormControlLabel value="Transcript of Records (for transferees)" control={<Radio />} label="Transcript of Records (for transferees)" />
-                            </RadioGroup>
+                            <FormGroup>
+                                {admissionType.map((value,index)=>{
+                                    return<FormControlLabel
+                                    key={index}
+                                    control={<Checkbox checked={String(student_Input.admission).toUpperCase() === String(value.type).toUpperCase() ? true : false} onChange={handleAdmission} name={value.type} />}
+                                    label={value.type}/>
+                                })}
+                            </FormGroup>
                         </FormControl>
+                        <Divider style={{marginTop:10}}/>
                     </Grid>
+
                     <Grid item xs={12} md={6} style={{marginTop:10}}>
                         <TextField
                             style={{width:'100%'}}
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.contact}
+                            onChange={onChange}
+                            name="contact"
                             label="Contact Number: "
                             variant="outlined"
                             />
@@ -406,6 +505,9 @@ export default function StudentView() {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
+                            value={student_Input.email}
+                            onChange={onChange}
+                            name="email"
                             label="Email Address: "
                             variant="outlined"
                             />

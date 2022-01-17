@@ -42,9 +42,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-
+import { DropzoneArea } from 'material-ui-dropzone'
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
+import { useDispatch,useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -81,10 +82,11 @@ const useStyles = makeStyles((theme) => ({
         margin: 4,
     },
 }));
-export default function LoginPg() {
+export default function DocsPg({warning}) {
     const classes = useStyles();
     const History = useHistory()
     const [refreshs, setrefreshs] = React.useState(false);
+    const [openCertified, setopenCertified] = React.useState(false);
     const [docstype, setdocstype] = React.useState([
         {type:'Diploma'},
         {type:'Transcript of Records (TOR)'},
@@ -93,13 +95,6 @@ export default function LoginPg() {
         {type:'CAV Credentials'},
         {type:'Certified True Copy of Document'},
     ]);
-
-    const [state, setState] = React.useState({
-        checkedA: true,
-        checkedB: true,
-        checkedF: true,
-        checkedG: true,
-      });
 
     const [torType, settorType] = React.useState([
         {type:'Personal Copy'},
@@ -130,25 +125,50 @@ export default function LoginPg() {
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
+    const Dispatch = useDispatch();
+
+    const ApplyFor = useSelector(state => state.reqDocsReducer.appliedFor)
+    const Selected_tor = useSelector(state => state.reqDocsReducer.tor_type)
+    const Selected_Cert = useSelector(state => state.reqDocsReducer.cert_type)
+
 
     const handleApply = (event) => {
-        const currentIndex = appliedCheck.findIndex(x => String(x).toUpperCase() === String(event.target.name).toUpperCase())
+        let appliedArray = ApplyFor
+        const currentIndex = appliedArray.findIndex(x => String(x).toUpperCase() === String(event.target.name).toUpperCase())
         if(currentIndex === -1){
-            appliedCheck.push(event.target.name)
+            appliedArray.push(event.target.name)
+            Dispatch({
+                type:'passApply',
+                applyDocs:appliedArray,
+            })
             setrefreshs(!refreshs)
         }else{
-            appliedCheck.splice(currentIndex, 1);
+            appliedArray.splice(currentIndex, 1);
             setrefreshs(!refreshs)
+            Dispatch({
+                type:'passApply',
+                applyDocs:appliedArray,
+            })
         }
     };
 
     const handleChangeTor = (event) => {
-        setselectedTor(event.target.value);
+        Dispatch({
+            type:'passTor',
+            tor_selected:event.target.value,
+        })
     };
 
     const handleChangeCertificate = (event) => {
-        setselectedCert(event.target.value);
+        Dispatch({
+            type:'passCert',
+            cert_selected:event.target.value,
+        })
     };
+
+    const handleClose = () => {
+        setopenCertified(false);
+      };
 
     useEffect(()=>{
         console.log(docstype)
@@ -158,13 +178,21 @@ export default function LoginPg() {
             <Grid item xs={12} md={3} ></Grid>
             <Grid item xs={12} md={6} >
                 <Typography variant="h4" >Document(s) Applied for:</Typography>
+                {warning === true &&
+                    <Card  style={{width:'100%',backgroundColor:'rgba(179, 57, 57,.9)',marginTop:10,marginBottom:10}}>
+                        <CardContent >
+                            <Typography style={{fontSize:16,marginTop:5,color:'#f5f6fa'}} >This section is required. Please select a document</Typography>
+                        </CardContent>
+                    </Card>
+                }
+                
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16}}> Please select the type(s) of document you are requesting by clicking on the appropriate checkbox(es). * </Typography>
                 <FormControl component="fieldset" required={true}>
-                    <FormGroup >
+                    <FormGroup>
                         {docstype.map((value,index)=>{
                             return<FormControlLabel
                             key={index}
-                            control={<Checkbox checked={appliedCheck.findIndex(x => String(x).toUpperCase() === String(value.type).toUpperCase()) !== -1} onChange={handleApply} name={value.type} />}
+                            control={<Checkbox checked={ApplyFor.findIndex(x => String(x).toUpperCase() === String(value.type).toUpperCase()) !== -1} onChange={handleApply} name={value.type} />}
                             label={value.type}/>
                         })}
                     </FormGroup>
@@ -176,7 +204,7 @@ export default function LoginPg() {
                     <Select
                     labelId="demo-simple-select-outlined-label"
                     id="demo-simple-select-outlined"
-                    value={selectedTor}
+                    value={Selected_tor}
                     onChange={handleChangeTor}
                     label="Age"
                     >
@@ -195,7 +223,7 @@ export default function LoginPg() {
                     <Select
                     labelId="demo-simple-select-outlined-label"
                     id="demo-simple-select-outlined"
-                    value={selectedCert}
+                    value={Selected_Cert}
                     onChange={handleChangeCertificate}
                     label="Age"
                     >
@@ -210,6 +238,7 @@ export default function LoginPg() {
                 <Divider style={{marginTop:10}}/>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16,marginTop:10}}> If you're applying for a Certified True Copy of document, please attach the clear scanned copy here</Typography>
                 <Button
+                    onClick={()=>setopenCertified(true)}
                     style={{marginTop:10}}
                     variant="contained"
                     color="default"
@@ -217,6 +246,36 @@ export default function LoginPg() {
                     startIcon={<CloudUploadIcon />}>
                     Attach file
                 </Button>
+
+                <Dialog
+                    fullWidth={"sm"}
+                    open={openCertified}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description">
+                    <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                    <DialogContent>
+                        <DropzoneArea
+                            filesLimit={1}
+                            className={classes.drop_zone_area}
+                            acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
+                            // onChange={handleChangeFile}
+                            showFileNames={true}
+                            maxFileSize={500800000}
+                            // onDelete={handleDelete}
+                            clearOnUnmount={false}
+                            initialFiles={[]}
+                            showPreviewsInDropzone={false}/>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        Attach
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </Grid>
             <Grid item xs={12} md={3}> </Grid>
         </Grid>

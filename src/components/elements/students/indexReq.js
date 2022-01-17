@@ -48,6 +48,8 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import DocsView from './docsForm'
 import StudentView from './studForm'
 import ProofView from './proofPayment'
+import { useDispatch,useSelector } from 'react-redux'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -87,6 +89,8 @@ export default function LoginPg() {
     const classes = useStyles();
     const History = useHistory()
     const [open, setOpen] = React.useState(false);
+    const [warning, setwarning] = React.useState(false);
+    const [warningadmiss, setwarningadmiss] = React.useState(false);
     const [docstype, setdocstype] = React.useState([
         {type:'Diploma'},
         {type:'Transcript of Records (TOR)'},
@@ -130,6 +134,8 @@ export default function LoginPg() {
     const [FormCount, setFormCount] = React.useState(0);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
+    const ApplyFor = useSelector(state => state.reqDocsReducer.appliedFor)
+    const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -141,7 +147,24 @@ export default function LoginPg() {
 
     const handleNext = (e) => {
         e.preventDefault()
-        setFormCount(FormCount+1)
+        if(FormCount === 0){
+            if(ApplyFor.length > 0){
+                setwarning(false)
+                setFormCount(FormCount+1)
+            }else{
+                setwarning(true)
+            }
+        }else if(FormCount === 1){
+            if(student_Input.admission !== ""){
+                setwarningadmiss(false)
+                setFormCount(FormCount+1)
+            }else{
+                setwarningadmiss(true)
+            }
+        }else{
+            setFormCount(FormCount+1)
+        }
+        
     };
 
     useEffect(()=>{
@@ -178,10 +201,10 @@ export default function LoginPg() {
                 <Divider style={{backgroundColor:'#f7be68',marginBottom:20,height:5}}/>
                     <form onSubmit={handleNext}>
                         {FormCount === 0 &&
-                            <DocsView/>
+                            <DocsView warning={warning}/>
                         }
                         {FormCount === 1 &&
-                            <StudentView/>
+                            <StudentView warningadmiss={warningadmiss}/>
                         }
                         {FormCount === 2 &&
                             <ProofView />
@@ -208,7 +231,7 @@ export default function LoginPg() {
                                         }else{
                                             setFormCount(counter)
                                         }
-                                    }} disabled={FormCount === 0}>
+                                    }} disabled={FormCount === -1}>
                                     {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                                     Back
                                     </Button>
