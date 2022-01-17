@@ -42,6 +42,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormLabel from '@material-ui/core/FormLabel';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -80,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPg() {
     const classes = useStyles();
     const History = useHistory()
-    const [open, setOpen] = React.useState(false);
+    const [refreshs, setrefreshs] = React.useState(false);
     const [docstype, setdocstype] = React.useState([
         {type:'Diploma'},
         {type:'Transcript of Records (TOR)'},
@@ -120,25 +124,30 @@ export default function LoginPg() {
         {type:'English as Medium of Instruction'},
         {type:'Not Applicable'},
     ]);
-    const [age, setAge] = React.useState('');
+    const [selectedTor, setselectedTor] = React.useState('');
+    const [selectedCert, setselectedCert] = React.useState('');
+    const [appliedCheck, setappliedCheck] = React.useState([]);
+
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
 
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleApply = (event) => {
+        const currentIndex = appliedCheck.findIndex(x => String(x).toUpperCase() === String(event.target.name).toUpperCase())
+        if(currentIndex === -1){
+            appliedCheck.push(event.target.name)
+            setrefreshs(!refreshs)
+        }else{
+            appliedCheck.splice(currentIndex, 1);
+            setrefreshs(!refreshs)
+        }
     };
-    
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
-
 
     const handleChangeTor = (event) => {
-        setAge(event.target.value);
+        setselectedTor(event.target.value);
+    };
+
+    const handleChangeCertificate = (event) => {
+        setselectedCert(event.target.value);
     };
 
     useEffect(()=>{
@@ -150,21 +159,24 @@ export default function LoginPg() {
             <Grid item xs={12} md={6} >
                 <Typography variant="h4" >Document(s) Applied for:</Typography>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16}}> Please select the type(s) of document you are requesting by clicking on the appropriate checkbox(es). * </Typography>
-                <FormGroup>
-                    {docstype.map((value,index)=>{
-                        return<FormControlLabel
-                        key={index}
-                        control={<Checkbox checked={state.checkedA} onChange={handleChange} name={value.type} />}
-                        label={value.type}/>
-                    })}
-                </FormGroup>
+                <FormControl component="fieldset" required={true}>
+                    <FormGroup >
+                        {docstype.map((value,index)=>{
+                            return<FormControlLabel
+                            key={index}
+                            control={<Checkbox checked={appliedCheck.findIndex(x => String(x).toUpperCase() === String(value.type).toUpperCase()) !== -1} onChange={handleApply} name={value.type} />}
+                            label={value.type}/>
+                        })}
+                    </FormGroup>
+                </FormControl>
+                <Divider style={{marginTop:10}}/>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16,marginTop:10}}> If you're applying for a Transcript of Records (TOR), please identify the purpose. *</Typography>
-                <FormControl variant="outlined" className={classes.formControl} style={{width:'100%',marginTop:10}}size={"small"}>
+                <FormControl variant="outlined" className={classes.formControl} style={{width:'100%',marginTop:10}}size={"small"} required={true}>
                     <InputLabel id="demo-simple-select-outlined-label">-Choose-</InputLabel>
                     <Select
                     labelId="demo-simple-select-outlined-label"
                     id="demo-simple-select-outlined"
-                    value={age}
+                    value={selectedTor}
                     onChange={handleChangeTor}
                     label="Age"
                     >
@@ -176,14 +188,15 @@ export default function LoginPg() {
                     })}
                     </Select>
                 </FormControl>
+                <Divider style={{marginTop:10}}/>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16,marginTop:10}}> If you're applying for a Certification, please specify the type. *</Typography>
-                <FormControl variant="outlined" className={classes.formControl} style={{width:'100%',marginTop:10}}size={"small"}>
+                <FormControl variant="outlined" className={classes.formControl} style={{width:'100%',marginTop:10}}size={"small"} required={true}>
                     <InputLabel id="demo-simple-select-outlined-label">-Choose-</InputLabel>
                     <Select
                     labelId="demo-simple-select-outlined-label"
                     id="demo-simple-select-outlined"
-                    value={age}
-                    onChange={handleChangeTor}
+                    value={selectedCert}
+                    onChange={handleChangeCertificate}
                     label="Age"
                     >
                     <MenuItem value="">
@@ -194,6 +207,7 @@ export default function LoginPg() {
                     })}
                     </Select>
                 </FormControl>
+                <Divider style={{marginTop:10}}/>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16,marginTop:10}}> If you're applying for a Certified True Copy of document, please attach the clear scanned copy here</Typography>
                 <Button
                     style={{marginTop:10}}

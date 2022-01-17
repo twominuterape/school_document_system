@@ -42,7 +42,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-
+import MobileStepper from '@material-ui/core/MobileStepper';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import DocsView from './docsForm'
 import StudentView from './studForm'
 import ProofView from './proofPayment'
@@ -137,13 +139,9 @@ export default function LoginPg() {
         setOpen(false);
     };
 
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
-
-
-    const handleChangeTor = (event) => {
-        setAge(event.target.value);
+    const handleNext = (e) => {
+        e.preventDefault()
+        setFormCount(FormCount+1)
     };
 
     useEffect(()=>{
@@ -178,32 +176,50 @@ export default function LoginPg() {
                 <DialogTitle id="responsive-dialog-title">{"Online Document Application Portal"}</DialogTitle>
                 <DialogContent>
                 <Divider style={{backgroundColor:'#f7be68',marginBottom:20,height:5}}/>
-                    {FormCount === 0 &&
-                        <DocsView/>
-                    }
-                    {FormCount === 1 &&
-                        <StudentView/>
-                    }
-                    {FormCount === 2 &&
-                        <ProofView />
-                    }
-                    
+                    <form onSubmit={handleNext}>
+                        {FormCount === 0 &&
+                            <DocsView/>
+                        }
+                        {FormCount === 1 &&
+                            <StudentView/>
+                        }
+                        {FormCount === 2 &&
+                            <ProofView />
+                        }
+                        <Grid container spacing={1} style={{marginTop:10}}>
+                            <Grid item xs={12} md={3} ></Grid>
+                            <Grid item xs={12} md={6} >
+                                <MobileStepper
+                                variant="progress"
+                                steps={5}
+                                position="static"
+                                activeStep={FormCount}
+                                className={classes.root}
+                                nextButton={
+                                    <Button size="small" type="submit"  disabled={FormCount === 3}> Next
+                                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                                    </Button>
+                                }
+                                backButton={
+                                    <Button size="small" onClick={()=>{
+                                        let counter = FormCount - 1
+                                        if(counter < 0){
+                                            handleClose()
+                                        }else{
+                                            setFormCount(counter)
+                                        }
+                                    }} disabled={FormCount === 0}>
+                                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                                    Back
+                                    </Button>
+                                }/>
+                            </Grid>
+                            <Grid item xs={12} md={3} ></Grid>
+                        </Grid>
+                    </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={()=>{
-                        let counter = FormCount - 1
-                        if(counter < 0){
-                            handleClose()
-                        }else{
-                            setFormCount(counter)
-                        }
-                        
-                    }} color="primary">
-                        Back
-                    </Button>
-                    <Button onClick={()=>setFormCount(FormCount+1)} color="primary" autoFocus>
-                        Next
-                    </Button>
+                   
                 </DialogActions>
             </Dialog>
         </React.Fragment>
