@@ -134,8 +134,11 @@ export default function LoginPg() {
     const [FormCount, setFormCount] = React.useState(0);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
+
     const ApplyFor = useSelector(state => state.reqDocsReducer.appliedFor)
     const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
+    const tor_selectedType = useSelector(state => state.reqDocsReducer.tor_type)
+    const certificate_type = useSelector(state => state.reqDocsReducer.cert_type)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -161,6 +164,33 @@ export default function LoginPg() {
             }else{
                 setwarningadmiss(true)
             }
+        }else if(FormCount === 2){
+            let formSubmit={
+                studnum:student_Input.studnum,
+                fname:student_Input.fname,
+                lname:student_Input.lname,
+                mname:student_Input.mname,
+                entry_year:student_Input.entry_year,
+                last_attn:student_Input.last_attn,
+                gradStatus:student_Input.gradStatus,
+                year_graduated:student_Input.year_graduated,
+                degree:student_Input.degree,
+                major:student_Input.major,
+                department:student_Input.department,
+                address:student_Input.address,
+                elem_school:student_Input.elem_school,
+                elem_year:student_Input.elem_year,
+                high_school:student_Input.high_school,
+                high_year:student_Input.high_year,
+                tertiary:student_Input.tertiary,
+                admission:student_Input.admission,
+                contact:student_Input.contact,
+                email:student_Input.email,
+                appliedFor:ApplyFor,
+                tor_type:tor_selectedType,
+                cert_type:certificate_type,
+            }
+            console.log(formSubmit)
         }else{
             setFormCount(FormCount+1)
         }
@@ -214,14 +244,20 @@ export default function LoginPg() {
                             <Grid item xs={12} md={6} >
                                 <MobileStepper
                                 variant="progress"
-                                steps={5}
+                                steps={3}
                                 position="static"
                                 activeStep={FormCount}
                                 className={classes.root}
                                 nextButton={
-                                    <Button size="small" type="submit"  disabled={FormCount === 3}> Next
-                                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-                                    </Button>
+                                    FormCount === 2
+                                        ?<Button size="small" type="submit" > 
+                                            Submit
+                                            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                                        </Button>
+                                        :<Button size="small" type="submit"  disabled={FormCount === 2}> 
+                                            Next
+                                            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                                        </Button>
                                 }
                                 backButton={
                                     <Button size="small" onClick={()=>{

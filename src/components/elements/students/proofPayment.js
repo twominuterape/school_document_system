@@ -45,6 +45,14 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormLabel from '@material-ui/core/FormLabel';
+import { DropzoneArea } from 'material-ui-dropzone'
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -97,83 +105,18 @@ export default function ProofView() {
     const helperTestClasses = helperTextStyles();
     const History = useHistory()
     const [open, setOpen] = React.useState(false);
-    const [docstype, setdocstype] = React.useState([
-        {type:'Diploma'},
-        {type:'Transcript of Records (TOR)'},
-        {type:'Certification'},
-        {type:'Transfer Credentials'},
-        {type:'CAV Credentials'},
-        {type:'Certified True Copy of Document'},
-    ]);
-
-    const [state, setState] = React.useState({
-        checkedA: true,
-        checkedB: true,
-        checkedF: true,
-        checkedG: true,
-      });
-
-    const [torType, settorType] = React.useState([
-        {type:'Personal Copy'},
-        {type:'Employment'},
-        {type:'Graduate School'},
-        {type:'Transfer Credentials'},
-        {type:'Scholarship Application'},
-        {type:'Transfer / Evaluation'},
-        {type:'Lisensure Examination'},
-        {type:'Others'},
-        {type:'Not Applicable'},
-    ]);
-
-    const [certificationType, setcertificationType] = React.useState([
-        {type:'General Weighted Average (GWA)'},
-        {type:'Enrollment'},
-        {type:'Graduation'},
-        {type:'Good Moral Character (for Licensure Exam)'},
-        {type:'Good Moral Character (for Transfer)'},
-        {type:'Eligibility to Transfer (Undergraduate)'},
-        {type:'Eligibility to Transfer (for Graduate School)'},
-        {type:'English as Medium of Instruction'},
-        {type:'Not Applicable'},
-    ]);
-
-    const [departmenttype, setdepartmenttype] = React.useState([
-        {type:'CAS'},
-        {type:'CITS'},
-        {type:'COE'},
-        {type:'CTE'},
-        {type:'CTHM'},
-        {type:'SEBA'},
-    ]);
-    const [age, setAge] = React.useState('');
+  
+    const [openCertified, setopenCertified] = React.useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
     const [admissionVal, setadmissionVal] = React.useState('Junior High School Report Card (JHS Form 138)');
 
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
     
     const handleClose = () => {
         setOpen(false);
     };
 
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
-
-
-    const handleChangeTor = (event) => {
-        setAge(event.target.value);
-    };
-
-    const handleAdmission = (event) => {
-        setadmissionVal(event.target.value);
-      };
-
     useEffect(()=>{
-        console.log(docstype)
     },[])
     return (
         <Grid container spacing={1} >
@@ -183,7 +126,81 @@ export default function ProofView() {
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16}}> Proof of Payment for the Requested Document(s)</Typography>
                 <Grid container spacing={1} style={{marginTop:10}}>
                     <Grid item xs={12} md={12} >
+                        <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow style={{backgroundColor:'#3d3d3d'}}>
+                                        <TableCell style={{color:'#f5f6fa'}}>Type of Document</TableCell>
+                                        <TableCell style={{color:'#f5f6fa'}}>Cost/ Amount to be paid</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            Diploma & TOR (Personal Copy)
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            ₱ 45.00
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            TOR (for specific purpose) 
+                                            <p style={{fontSize:12,color:'#c23616'}}>**Each page containes 3 academic semesters</p>
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            ₱45.00 (1 page) ; ₱345.00 (2 pages) ; ₱495.00 (3 pages) ; ₱645.00 (4 pages) ; 
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            Certification (per type)
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            ₱ 145.00
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            Complete CAV credentials
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            ₱ 250.00
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            Transfer Credentials
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            ₱ 485.00
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            Certified true copy of document
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            ₱ 30.00 (per type of document with maximum of 2 copies per document)
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    <Typography style={{fontSize:14,marginTop:10}} >
+                        Pay directly thru any of the following WIS-accredited banks or via GCash:<br/>
+                        Bank Name: Bank of Commerce (BOC)<br/>
+                        Account Name: Westmead International School Inc.<br/>
+                        Account Number: 027-00-001272-1<br/>
+                        <br/>
+                        Bank Name: Banco de Oro (BDO)<br/>
+                        Account Name: Westmead International School Inc.<br/>
+                        Account Number: 012598000438
+                    </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} >
                         <Button
+                        onClick={()=>setOpen(true)}
                         style={{marginTop:10}}
                         variant="contained"
                         color="default"
@@ -193,6 +210,34 @@ export default function ProofView() {
                         </Button>   
                     </Grid>
                 </Grid>
+                <Dialog
+                    fullWidth={"sm"}
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description">
+                    <DialogContent>
+                        <DropzoneArea
+                            filesLimit={1}
+                            className={classes.drop_zone_area}
+                            acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
+                            // onChange={handleChangeFile}
+                            showFileNames={true}
+                            maxFileSize={500800000}
+                            // onDelete={handleDelete}
+                            clearOnUnmount={false}
+                            initialFiles={[]}
+                            showPreviewsInDropzone={false}/>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        Attach
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </Grid>
             <Grid item xs={12} md={3}> </Grid>
         </Grid>
