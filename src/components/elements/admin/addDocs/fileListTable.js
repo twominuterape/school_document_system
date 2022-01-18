@@ -131,7 +131,7 @@ export default function StickyHeadTable() {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const { folderName, category_id } = useParams();
+    const { folderName, category_id, user_id } = useParams();
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -201,7 +201,7 @@ export default function StickyHeadTable() {
         }
         data.append('file_name', state.selected_file_name)
         data.append('category_id', category_id)
-        data.append('student_id', 1)
+        data.append('student_id', user_id)
         data.append('user_id', 2)
         if (state.actionButtonType === "Update") {
             data.append('action', state.actionButtonType)
@@ -261,7 +261,7 @@ export default function StickyHeadTable() {
             },
         })
         Promise.all([getData('addingDocs/getCategoryList', { category_type: 'File Name', folderName: folderName }),
-        getData('addingDocs/getDocuments', { category_id: category_id, student_id: 1 })])
+        getData('addingDocs/getDocuments', { category_id: category_id, student_id: user_id})])
             .then((res) => {
                 Swal.close()
                 setState(prev => ({ ...prev, fileNameList: res[0].result.data, documentList: res[1].result.data }))
@@ -375,7 +375,7 @@ export default function StickyHeadTable() {
 
             <>
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
-                    <Link color="inherit" href="/#/wis/folder/">Back</Link>
+                    <Link color="inherit" href={"/#/wis/admin/folder/"+user_id}>Back</Link>
                     <Link color="inherit" href="/">Home Page</Link>
                     <Typography color="textPrimary">Files</Typography>
                     <Typography color="textPrimary">{toTitleCase(folderName)}</Typography>

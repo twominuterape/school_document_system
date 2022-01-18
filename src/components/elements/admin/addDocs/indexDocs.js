@@ -113,15 +113,7 @@ export default function LoginPg() {
                     <Typography color="textPrimary">Student List</Typography>
                 </Breadcrumbs>
                 <Grid container spacing={1}>
-                    <Grid container item xs={12} md={2}>
-                        {/* <TextField style={{ width: '100%' }} size='small' label='Search' variant='outlined' /> */}
-                    </Grid>
-                    <Grid item xs={12} md={1} >
-
-                    </Grid>
-                    <Grid item xs={12} md={9}>
-
-                    </Grid>
+                    
                     {/* <Grid item xs={12} md={3}>
                         <Card style={{ width: '100%' }}>
                             <div style={{ backgroundColor: '#b33939', display: 'flex', justifyContent: 'flex-start', padding: 2, paddingLeft: 5 }}>

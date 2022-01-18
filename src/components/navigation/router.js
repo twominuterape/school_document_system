@@ -164,11 +164,11 @@ export default function LoginPg() {
                     </div>
                     <Divider />
                     <List>
-                        <ListItem component={NewLink} to="/wis/documents/" button >
+                        <ListItem component={NewLink} to="/wis/admin/documents/" button >
                             <ListItemIcon > <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Documents'} style={{ color: '#fff' }} />
                         </ListItem>
-                        <ListItem button >
+                        <ListItem  component={NewLink} to="/wis/admin/requests/"  button >
                             <ListItemIcon> <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Requests'} style={{ color: '#fff' }} />
                         </ListItem>

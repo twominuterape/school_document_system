@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Typography, Breadcrumbs, Link } from '@material-ui/core';
+import { Typography, Breadcrumbs, Link, AppBar, Toolbar, List, ListItemText, ListItem } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -43,33 +43,24 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import { getData } from '../../../api/api';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import CloseIcon from '@material-ui/icons/Close';
+import AttachIcon from './attachIcon.png'
+import { loading_page } from '../../loading'
+import CachedIcon from '@material-ui/icons/Cached';
+import Swal from 'sweetalert2';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+let width = window.innerWidth;
 const columns = [
-    { id: 'name', label: 'Name', minWidth: 170 },
-    { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-    {
-        id: 'population',
-        label: 'Population',
-        minWidth: 170,
-        align: 'right',
-        format: (value) => value.toLocaleString('en-US'),
-    },
-    {
-        id: 'size',
-        label: 'Size\u00a0(km\u00b2)',
-        minWidth: 170,
-        align: 'right',
-        format: (value) => value.toLocaleString('en-US'),
-    },
-    {
-        id: 'density',
-        label: 'Density',
-        minWidth: 170,
-        align: 'right',
-        format: (value) => value.toFixed(2),
-    },
+    { id: 'form_id', label: 'Request ID' },
+    { id: 'studnum', label: 'Student No.' },
+    { id: 'lname', label: 'Name' },
+    { id: 'department', label: 'Department' },
+    { id: 'degree', label: 'Degree' },
 
 ];
 
@@ -139,10 +130,102 @@ export default function LoginPg() {
         setPage(newPage);
     };
 
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const [state, setState] = React.useState({
+        requestList: [],
+        statusFilter: '',
+        requestListDisplay: [],
+        searchDriver: '',
+        selectedReq: [],
+        refresh: false
+    })
+
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    const handleFilter = (e) => {
+        setState(prev => ({ ...prev, statusFilter: e.target.value }))
+    }
+    let RequestList = state.requestListDisplay.filter(
+        (files) => {
+            return files.fname.toLowerCase().indexOf(
+                state.searchDriver.toLocaleLowerCase()) !== -1 || files.lname.toLowerCase().indexOf(
+                    state.searchDriver.toLocaleLowerCase()) !== -1
+                || files.fname.toLowerCase().indexOf(
+                    state.searchDriver.toLocaleLowerCase()) !== -1
+        }
+    )
+    const onSubmitFilter = () => {
+        let filter = []
+        if (state.statusFilter === "ALL") {
+            filter = state.requestList
+        } else {
+            filter = state.requestList.filter((val) => (val.status === state.statusFilter))
+        }
+
+        setState(prev => ({ ...prev, requestListDisplay: filter }))
+    }
+    React.useEffect(() => {
+        loading_page()
+        getData('requests/getRequests').then((res) => {
+            Swal.close()
+            setState(prev => ({ ...prev, requestList: res.result.data, requestListDisplay: res.result.data }))
+        })
+    }, [state.refresh])
+    const onChangeText = (e) => {
+        setState(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }))
+    }
+    const onSubmitApproved = (status) => {
+        setOpen(false)
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to " + status + ' this request',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                loading_page()
+                getData('addingDocs/approveRequest', { form_id: state.selectedReq.form_id, status: status }).then((res) => {
+                    Swal.close()
+                    if (res.status == "success") {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            html: 'Success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            setState(prev => ({ ...prev, selectedReq: [], refresh: !state.refresh }))
+                        })
+                    } else {
+                        setOpen(true)
+                    }
+                    // setState(prev => ({ ...prev, requestList: res.result.data, requestListDisplay: res.result.data }))
+                })
+            } else {
+                setOpen(true)
+            }
+        })
+
+    }
     return (
         <React.Fragment>
             <>
@@ -185,27 +268,35 @@ export default function LoginPg() {
                     </Grid> */}
                     <Grid item xs={12} md={4}>
                         <Grid container spacing={1}>
-                            <Grid item xs={12} md={10} >
+                            <Grid item xs={12} md={6} >
                                 <FormControl size={"small"} style={{ width: '100%' }} variant="outlined" className={classes.formControl}>
                                     <InputLabel id="demo-simple-select-filled-label">Status</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-filled-label"
                                         id="demo-simple-select-filled"
-                                    // value={age}
-                                    // onChange={handleChange}
+                                        value={state.statusFilter}
+                                        onChange={handleFilter}
+                                        style={{ textAlign: 'left' }}
                                     >
                                         <MenuItem value="">
                                             <em>None</em>
                                         </MenuItem>
-                                        <MenuItem value={10}>Ten</MenuItem>
-                                        <MenuItem value={20}>Twenty</MenuItem>
-                                        <MenuItem value={30}>Thirty</MenuItem>
+                                        <MenuItem value={"All"}>All</MenuItem>
+                                        <MenuItem value={"Pending"}>Pending</MenuItem>
+                                        <MenuItem value={"Approved"}>Approved</MenuItem>
+
+
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} md={1} >
-                                <Button style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
+                            <Grid item xs={12} md={3} >
+                                <Button onClick={() => { onSubmitFilter() }} style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
                                     Filter
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} md={3} >
+                                <Button onClick={() => { setState(prev=>({...prev,refresh:!state.refresh,statusFilter:[],searchDriver:""}))}} style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
+                                  <CachedIcon/>
                                 </Button>
                             </Grid>
                         </Grid>
@@ -213,14 +304,14 @@ export default function LoginPg() {
                     <Grid item xs={12} md={5}></Grid>
 
                     <Grid container item xs={12} md={3} justify='flex-end'>
-                        <TextField style={{ width: '100%' }} variant='outlined' size='small' label="Search Name"></TextField>
+                        <TextField onChange={onChangeText} name='searchDriver' style={{ width: '100%' }} variant='outlined' size='small' label="Search Name"></TextField>
                     </Grid>
 
                     <Grid item xs={12} md={12}>
                         <Paper>
 
-                            <TableContainer className={classes.container}>
-                                <Table stickyHeader aria-label="sticky table">
+                            <TableContainer className={classes.container} style={{ maxHeight: 400, }}>
+                                <Table stickyHeader aria-label="sticky table" >
                                     <TableHead>
                                         <TableRow>
                                             <TableCell
@@ -238,30 +329,55 @@ export default function LoginPg() {
                                                     {column.label}
                                                 </TableCell>
                                             ))}
+                                            <TableCell
+                                                style={{ backgroundColor: '#b23232', color: '#fff' }}
+                                            >
+                                                Document(s)
+                                            </TableCell>
+                                            <TableCell
+                                                style={{ backgroundColor: '#b23232', color: '#fff' }}
+                                            >
+                                                Status
+                                            </TableCell>
 
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                        {RequestList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+
                                             return (
-                                                <TableRow onClick={() => {
-                                                    history.push('/wis/folder')
-                                                }} hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                                     <TableCell
-                                                        style={{ display: 'flex', justifyContent: 'flex-start' }}
 
                                                     >
-                                                        {/* <FolderOpenIcon style={{ cursor: 'pointer', color: '#ed9e21' }} /> */}
+                                                        <CallMadeIcon onClick={() => {
+                                                            handleClickOpen()
+                                                            setState(prev => ({ ...prev, selectedReq: row }))
+                                                        }} style={{ cursor: 'pointer', color: '#ed9e21' }} />
                                                     </TableCell>
                                                     {columns.map((column) => {
-                                                        const value = row[column.id];
+                                                        let value = row[column.id];
+                                                        if (column.id === 'lname') {
+                                                            value = String(row.lname + ' ' + row.fname + ', ' + row.mname).toLocaleUpperCase()
+                                                        }
                                                         return (
                                                             <TableCell key={column.id} align={column.align}>
                                                                 {column.format && typeof value === 'number' ? column.format(value) : value}
                                                             </TableCell>
                                                         );
                                                     })}
-
+                                                    <TableCell>
+                                                        {/* {JSON.parse(row.appliedFor).map((val, index2) => {
+                                                            return <div style={{ display: 'flex', alignItems: 'center', }}>
+                                                                <div style={{ width: 10, height: 10, borderRadius: 5, background: '#f1c40f', marginRight: 5 }} />
+                                                                <Typography key={index2}>{val}</Typography>
+                                                            </div>
+                                                        })
+                                                        } */}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography>{row.status}</Typography>
+                                                    </TableCell>
                                                 </TableRow>
                                             );
                                         })}
@@ -271,7 +387,7 @@ export default function LoginPg() {
                             <TablePagination
                                 rowsPerPageOptions={[10, 25, 100]}
                                 component="div"
-                                count={rows.length}
+                                count={RequestList.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 onPageChange={handleChangePage}
@@ -281,7 +397,141 @@ export default function LoginPg() {
 
                     </Grid>
                 </Grid>
+                <Dialog fullScreen open={open} onClose={handleClose} style={{ overflowX: 'hidden' }}>
+                    <AppBar style={{ background: '#fff' }} elevation={1}>
+                        <Toolbar>
+                            <IconButton style={{ color: '#000' }} edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                                <CloseIcon />
+                            </IconButton>
+                            <Typography variant="h6" style={{ color: '#000' }}>
+                                Request Details
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <div style={{ marginTop: 100 }} />
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={3}>
 
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Card variant='outlined'>
+                                <CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h5'>Student Info</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={3}>
+                                            <Typography variant='p'>Student No.</Typography>
+                                            <TextField readOnly variant='outlined' size='small' style={{ width: '100%', background: '#ecf0f1' }} value={state.selectedReq.studnum}></TextField>
+                                        </Grid>
+                                        <Grid item xs={12} md={9}>
+                                            <Typography variant='p'>Name</Typography>
+                                            <TextField readOnly variant='outlined' size='small' style={{ width: '100%', background: '#ecf0f1' }} value={state.selectedReq.lname + ' ' + state.selectedReq.fname + ', ' + state.selectedReq.mname}></TextField>
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='p'>Department</Typography>
+                                            <TextField readOnly variant='outlined' size='small' style={{ width: '100%', background: '#ecf0f1' }} value={state.selectedReq.department}></TextField>
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='p'>Degree</Typography>
+                                            <TextField readOnly variant='outlined' size='small' style={{ width: '100%', background: '#ecf0f1' }} value={state.selectedReq.degree}></TextField>
+                                        </Grid>
+                                    </Grid>
+
+                                </CardContent>
+                            </Card>
+                            <hr />
+                            <Card variant='outlined'>
+                                <CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h5'>Request Document(s)</Typography>
+                                        </Grid>
+                                        <Grid>
+                                            {typeof state.selectedReq.appliedFor !== "undefined" && JSON.parse(state.selectedReq.appliedFor).map((val, index2) => {
+                                                return <div style={{ display: 'flex', alignItems: 'center', marginLeft: 20 }}>
+                                                    <div style={{ width: 10, height: 10, borderRadius: 5, background: '#f1c40f', marginRight: 5 }} />
+                                                    <Typography key={index2}>{val}</Typography>
+                                                </div>
+                                            })
+                                            }
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                            <hr />
+                            <Card variant='outlined'>
+                                <CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} md={12}>
+                                            {
+                                                state.selectedReq.cert_file != "" && state.selectedReq.cert_file != null ?
+                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                        <Typography variant='p' style={{ fontSize: 15 }}>Certified True Copy of Document</Typography>
+                                                        <img onClick={() => {
+                                                            window.open('https://images.workflow.gzonetechph.com/documents_wis/' + state.selectedReq.cert_file)
+                                                        }} src={'https://images.workflow.gzonetechph.com/documents_wis/' + state.selectedReq.cert_file} style={{ width: 100, height: 100, cursor: 'pointer' }} />
+
+                                                    </div>
+                                                    : undefined
+                                            }
+
+
+
+                                            {/* <img src={'https://images.workflow.gzonetechph.com/documents_wis/'+state.selectedReq.cert_file} style={{width:'50%',height:'50%'}}/>     */}
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            {
+                                                state.selectedReq.receipt_file != "" && state.selectedReq.receipt_file != null ?
+                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                        <Typography variant='p' style={{ fontSize: 15 }}>Proof of Payment</Typography>
+                                                        <img src={'https://images.workflow.gzonetechph.com/documents_wis/' + state.selectedReq.receipt_file} style={{ width: 100, height: 100, cursor: 'pointer' }} />
+                                                    </div>
+                                                    : undefined
+                                            }
+
+
+                                            {/* <img src={'https://images.workflow.gzonetechph.com/documents_wis/'+state.selectedReq.cert_file} style={{width:'50%',height:'50%'}}/>     */}
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                            <Grid container spacing={1}>
+                                <Grid item xs={12} md={8} >
+                                </Grid>
+                                {state.selectedReq.status == 'Pending' &&
+                                    <Grid container item xs={12} md={2} justify='flex-end'>
+                                        <Button onClick={() => { onSubmitApproved('Denied') }} style={{ width: width < 600 ? '100%' : undefined, background: '#e74c3c', color: '#fff', fontWeight: "bold", marginTop: 10 }} variant="contained">
+                                            Deny
+                                        </Button>
+                                    </Grid>
+                                }
+                                {state.selectedReq.status == 'Pending' &&
+                                    <Grid container item xs={12} md={2} justify='flex-end'>
+                                        <Button onClick={() => { onSubmitApproved('Approved') }} style={{ width: width < 600 ? '100%' : undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold", marginTop: 10 }} variant="contained">
+                                            Approve
+                                        </Button>
+                                    </Grid>
+                                }
+                                 {(state.selectedReq.status == 'Approved' || state.selectedReq.status == 'Denied') &&
+                                    <Grid container item xs={12} md={4} justify='flex-end'>
+                                        <Button onClick={() => { onSubmitApproved('Pending') }} style={{ width: width < 600 ? '100%' : undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold", marginTop: 10 }} variant="contained">
+                                            Undo
+                                        </Button>
+                                    </Grid>
+                                }
+
+
+                            </Grid>
+
+
+
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+
+                        </Grid>
+                    </Grid>
+                </Dialog>
             </>
         </React.Fragment>
     );
