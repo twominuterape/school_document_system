@@ -26,7 +26,8 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import {
-    useHistory
+    useHistory,
+    useParams
   } from "react-router-dom";
   import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -93,6 +94,8 @@ const useStyles = makeStyles({
 });
 
 export default function FileStorage() {
+    const {user_id } = useParams();
+
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
@@ -260,7 +263,7 @@ export default function FileStorage() {
        })
     }
     const getFiles = (data,file_id) =>{
-        history.push('/wis/admin/fileStorageList/'+data+'/'+file_id)
+        history.push('/wis/admin/fileStorageList/'+data+'/'+file_id+'/'+user_id)
         
     }
 

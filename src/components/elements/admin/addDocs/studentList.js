@@ -91,7 +91,7 @@ export default function StickyHeadTable({state}) {
     </Grid>
     <Grid item xs={12} md={12}>
   
-    <TableContainer className={classes.container}>
+    <TableContainer className={classes.container} >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

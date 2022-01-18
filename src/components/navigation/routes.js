@@ -31,10 +31,16 @@ export const routes = [
         page_name: 'File Storage'
     },
     {
-        path: '/wis/admin/fileStorageList/:folderName/:category_id',
+        path: '/wis/admin/fileStorageList/:folderName/:category_id/:user_id',
         exact: false,
         component: FileStorageList,
         page_name: 'File Storage List'
+    },
+    {
+        path: '/wis/admin/requests',
+        exact: false,
+        component: RequestIndex,
+        page_name: 'Requests'
     },
    
 ]
