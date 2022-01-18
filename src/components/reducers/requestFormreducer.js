@@ -24,6 +24,8 @@ const INITIAL_STATE = {
         contact:"",
         email:"",
     },
+    certifiedCopy:[],
+    receiptCopy:[],
     docsPrice:[
         {type:'Diploma',price:'45.00'},
         {type:'Tor others',price:'195.00'},
@@ -60,6 +62,27 @@ const reqDocsReducer = (state = INITIAL_STATE,action)=>{
                 },
                 
             }  
+        case 'passCertified' :
+            return{
+                ...state,
+                certifiedCopy:action.certifiedImage,
+            }  
+        case 'passReceipt' :
+            return{
+                ...state,
+                receiptCopy:action.receiptImage,
+            }  
+        case 'resetVAlue' :
+            return{
+                ...state,
+                appliedFor:action.resetapply,
+                tor_type:action.reset_tor,
+                cert_type:action.reset_cert,
+                studentDetails:action.reset_studform,
+                certifiedCopy:action.reset_copy,
+                receiptCopy:action.reset_receipt,
+            }  
+         
         default:
             return state;         
     }

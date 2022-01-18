@@ -49,7 +49,10 @@ import DocsView from './docsForm'
 import StudentView from './studForm'
 import ProofView from './proofPayment'
 import { useDispatch,useSelector } from 'react-redux'
-
+import { getData } from '../../api/api'
+import axios from "axios"
+import Swal from 'sweetalert2'
+import { loading_page } from '../loading'
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -134,11 +137,15 @@ export default function LoginPg() {
     const [FormCount, setFormCount] = React.useState(0);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
+    const Dispatch = useDispatch();
 
     const ApplyFor = useSelector(state => state.reqDocsReducer.appliedFor)
     const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
     const tor_selectedType = useSelector(state => state.reqDocsReducer.tor_type)
     const certificate_type = useSelector(state => state.reqDocsReducer.cert_type)
+
+    const ReceiptFile = useSelector(state => state.reqDocsReducer.receiptCopy)
+    const CertifiedFiles = useSelector(state => state.reqDocsReducer.certifiedCopy)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -165,6 +172,8 @@ export default function LoginPg() {
                 setwarningadmiss(true)
             }
         }else if(FormCount === 2){
+            setOpen(false);
+            let data = new FormData();
             let formSubmit={
                 studnum:student_Input.studnum,
                 fname:student_Input.fname,
@@ -186,11 +195,84 @@ export default function LoginPg() {
                 admission:student_Input.admission,
                 contact:student_Input.contact,
                 email:student_Input.email,
-                appliedFor:ApplyFor,
+                appliedFor:JSON.stringify(ApplyFor),
                 tor_type:tor_selectedType,
                 cert_type:certificate_type,
+                status:'Pending'
             }
-            console.log(formSubmit)
+            for (let index = 0; index < CertifiedFiles.length; index++) {
+                const element = CertifiedFiles[index];
+                data.append('certfile' + index, element)
+            }
+            for (let index = 0; index < ReceiptFile.length; index++) {
+                const element = ReceiptFile[index];
+                data.append('receiptfile' + index, element)
+            }
+            data.append('formfile', JSON.stringify(formSubmit))
+            const config = {
+                onUploadProgress: progressEvent => {
+                    const { loaded, total } = progressEvent;
+                    let percent = Math.floor((loaded * 100) / total)
+                    console.log(`${loaded}kb of ${total}kb | ${percent}`)
+                    // setState(prev=>({...prev,percent:percent}))
+                }
+            }
+            loading_page()
+            axios.post("http://beta.gzonetechph.com/Application_form/postApplication", data, config)
+            .then((res) => {
+                Swal.close()
+                if(JSON.stringify(res.data).includes('success')){
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        html: 'Request document form successfuly submitted',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                       
+                    })
+                    let studFormnew = {
+                        studnum:"",
+                        fname:"",
+                        lname:"",
+                        mname:"",
+                        entry_year:"",
+                        last_attn:"",
+                        gradStatus:"",
+                        year_graduated:"",
+                        degree:"",
+                        major:"",
+                        department:"",
+                        address:"",
+                        elem_school:"",
+                        elem_year:"",
+                        high_school:"",
+                        high_year:"",
+                        tertiary:"",
+                        admission:"Junior High School Report Card (JHS Form 138)",
+                        contact:"",
+                        email:"",
+                    }
+                    Dispatch({
+                        type:'resetVAlue',
+                        resetapply:[],
+                        reset_tor:"",
+                        reset_cert:"",
+                        reset_studform:studFormnew,
+                        reset_copy:[],
+                        reset_receipt:[],
+                    })
+                    setFormCount(0)
+                }else{
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        html: 'Failed to post your request. Please try again',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {setOpen(true);})
+                }
+            })
         }else{
             setFormCount(FormCount+1)
         }

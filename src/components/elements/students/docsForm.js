@@ -122,6 +122,7 @@ export default function DocsPg({warning}) {
     const [selectedTor, setselectedTor] = React.useState('');
     const [selectedCert, setselectedCert] = React.useState('');
     const [appliedCheck, setappliedCheck] = React.useState([]);
+    const [files, setfiles] = React.useState([]);
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
@@ -130,6 +131,7 @@ export default function DocsPg({warning}) {
     const ApplyFor = useSelector(state => state.reqDocsReducer.appliedFor)
     const Selected_tor = useSelector(state => state.reqDocsReducer.tor_type)
     const Selected_Cert = useSelector(state => state.reqDocsReducer.cert_type)
+    const CertifiedFiles = useSelector(state => state.reqDocsReducer.certifiedCopy)
 
 
     const handleApply = (event) => {
@@ -167,8 +169,21 @@ export default function DocsPg({warning}) {
     };
 
     const handleClose = () => {
+        setfiles([])
         setopenCertified(false);
-      };
+    };
+
+    const handleChangeFile = (files) => {
+        setfiles(files)
+    }
+
+    const handleDelete = () => {
+        Dispatch({
+            type:'passCertified',
+            certifiedImage:[],
+        })
+        setfiles([])
+    };
 
     useEffect(()=>{
         console.log(docstype)
@@ -246,6 +261,7 @@ export default function DocsPg({warning}) {
                     startIcon={<CloudUploadIcon />}>
                     Attach file
                 </Button>
+                <Typography>{CertifiedFiles.length > 0 ? CertifiedFiles[0].name : ""}</Typography>
 
                 <Dialog
                     fullWidth={"sm"}
@@ -258,20 +274,28 @@ export default function DocsPg({warning}) {
                         <DropzoneArea
                             filesLimit={1}
                             className={classes.drop_zone_area}
-                            acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
-                            // onChange={handleChangeFile}
+                            acceptedFiles={[".png,.jpg,.jpeg,.csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
+                            onChange={handleChangeFile}
                             showFileNames={true}
                             maxFileSize={500800000}
-                            // onDelete={handleDelete}
+                            onDelete={handleDelete}
                             clearOnUnmount={false}
-                            initialFiles={[]}
-                            showPreviewsInDropzone={false}/>
+                            initialFiles={CertifiedFiles}
+                            showPreviewsInDropzone={true}/>
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary" autoFocus>
+                    <Button onClick={()=>{
+                         Dispatch({
+                            type:'passCertified',
+                            certifiedImage:files,
+                        })
+                        setTimeout(()=>{
+                            handleClose()
+                        },200)
+                        }} color="primary" autoFocus>
                         Attach
                     </Button>
                     </DialogActions>

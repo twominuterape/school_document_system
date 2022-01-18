@@ -25,8 +25,9 @@ import Visibility from '@material-ui/icons/Visibility';
 import Button from '@material-ui/core/Button';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import { useParams,useHistory } from "react-router-dom";
-
+import Swal from 'sweetalert2'
 import { makeStyles } from '@material-ui/core/styles';
+import LockIcon from '@material-ui/icons/Lock';
 let width_window= window.innerWidth;
 let height_window = window.innerHeight;
 const useStyles = makeStyles((theme) => ({
@@ -64,10 +65,30 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
   },
 }));
-console.log(width_window)
 export default function LoginPg() {
   const classes = useStyles();
   const History = useHistory()
+  const [username, setusername] = React.useState(false);
+  const [password, setpassword] = React.useState(false);
+
+  const submitLogin=()=>{
+    let accountPass ={
+      username:"",
+      password:""
+    }
+    if(username === "admin" && password === "12345678"){
+      History.push('/wis/admin/document')
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        html: 'Invalid username or password. Please try again',
+        showConfirmButton: false,
+        timer: 1500
+    }).then(() => { })
+    }
+
+  }
   return (
     <React.Fragment>
       <Container>
@@ -91,6 +112,7 @@ export default function LoginPg() {
                             id="outlined-size-small"
                             variant="outlined"
                             size="small"
+                            onChange={(val)=>setusername(val.target.value)}
                             InputProps={{
                               startAdornment: <InputAdornment position="end">
                                 <IconButton aria-label="toggle password visibility" edge="start">
@@ -105,17 +127,19 @@ export default function LoginPg() {
                             id="outlined-size-small"
                             variant="outlined"
                             size="small"
+                            type="password"
+                            onChange={(val)=>setpassword(val.target.value)}
                             InputProps={{
                               startAdornment: <InputAdornment position="end">
                                 <IconButton aria-label="toggle password visibility" edge="start">
-                                  <AccountCircle />
+                                  <LockIcon />
                                 </IconButton>
                               </InputAdornment>
                             }} />
                         </FormControl>
                         <Button
                           onClick={()=>{
-                            History.push('/wis')
+                            submitLogin()
                           }}
                           size='small' variant="contained"
                           style={{
@@ -126,7 +150,7 @@ export default function LoginPg() {
                             marginRight: 5,
                             height: 40
                           }}
-                          className={classes.button}>Logasdasdsin</Button>
+                          className={classes.button}>Submit</Button>
                         </div>
                       </div>
                     </CardContent>

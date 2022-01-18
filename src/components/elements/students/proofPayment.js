@@ -53,6 +53,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { useDispatch,useSelector } from 'react-redux'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -105,15 +107,34 @@ export default function ProofView() {
     const helperTestClasses = helperTextStyles();
     const History = useHistory()
     const [open, setOpen] = React.useState(false);
+    const [files, setfiles] = React.useState([]);
   
     const [openCertified, setopenCertified] = React.useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
     const [admissionVal, setadmissionVal] = React.useState('Junior High School Report Card (JHS Form 138)');
 
+    const Dispatch = useDispatch();
+    const ReceiptFile = useSelector(state => state.reqDocsReducer.receiptCopy)
+
     
     const handleClose = () => {
+        setfiles([])
         setOpen(false);
+    };
+
+
+    const handleChangeFile = (files) => {
+        console.log(files)
+        setfiles(files)
+    }
+
+    const handleDelete = () => {
+        Dispatch({
+            type:'passReceipt',
+            receiptImage:[],
+        })
+        setfiles([])
     };
 
     useEffect(()=>{
@@ -208,6 +229,7 @@ export default function ProofView() {
                         startIcon={<CloudUploadIcon />}>
                         Attach file
                         </Button>   
+                        <Typography>{ReceiptFile.length > 0 ? ReceiptFile[0].name : ""}</Typography>
                     </Grid>
                 </Grid>
                 <Dialog
@@ -220,20 +242,28 @@ export default function ProofView() {
                         <DropzoneArea
                             filesLimit={1}
                             className={classes.drop_zone_area}
-                            acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
-                            // onChange={handleChangeFile}
+                            acceptedFiles={[".png,.jpg,.jpeg,.csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
+                            onChange={handleChangeFile}
                             showFileNames={true}
                             maxFileSize={500800000}
-                            // onDelete={handleDelete}
+                            onDelete={handleDelete}
                             clearOnUnmount={false}
-                            initialFiles={[]}
-                            showPreviewsInDropzone={false}/>
+                            initialFiles={ReceiptFile}
+                            showPreviewsInDropzone={true}/>
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary" autoFocus>
+                    <Button onClick={()=>{
+                        Dispatch({
+                            type:'passReceipt',
+                            receiptImage:files,
+                        })
+                        setTimeout(()=>{
+                            handleClose()
+                        },200)
+                    }} color="primary" autoFocus>
                         Attach
                     </Button>
                     </DialogActions>

@@ -109,7 +109,7 @@ export default function LoginPg() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     return <div className="App">
         <Router>
             <div className={classes.root}>
