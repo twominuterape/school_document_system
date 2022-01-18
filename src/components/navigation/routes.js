@@ -9,13 +9,38 @@ import FileStorage from '../elements/admin/addDocs/fileList'
 import FileStorageList from '../elements/admin/addDocs/fileListTable'
 // import Index from '../landingpg'
 import reqDocuments from '../elements/students/indexReq'
-const routes = [
+import RequestIndex from '../elements/admin/requests/indexRequests'
+export const routes = [
     // {
     //     path: '/home',
     //     exact: true,
     //     component: Index,
     //     page_name: 'LandPage'
     // },
+   
+    {
+        path: '/wis/admin/documents',
+        exact: false,
+        component: AddDocuments,
+        page_name: 'Adding Documents'
+    },
+    {
+        path: '/wis/admin/folder/:user_id',
+        exact: false,
+        component: FileStorage,
+        page_name: 'File Storage'
+    },
+    {
+        path: '/wis/admin/fileStorageList/:folderName/:category_id',
+        exact: false,
+        component: FileStorageList,
+        page_name: 'File Storage List'
+    },
+   
+]
+
+export const routes_student = [
+   
     {
         path: '/wis',
         exact: true,
@@ -23,22 +48,10 @@ const routes = [
         page_name: 'Documents Request'
     },
     {
-        path: '/wis/documents',
+        path: '/wis/requestList/',
         exact: false,
-        component: AddDocuments,
-        page_name: 'Adding Documents'
-    },
-    {
-        path: '/wis/folder',
-        exact: false,
-        component: FileStorage,
-        page_name: 'File Storage'
-    },
-    {
-        path: '/wis/fileStorageList/:folderName/:category_id',
-        exact: false,
-        component: FileStorageList,
-        page_name: 'File Storage List'
+        component: RequestIndex,
+        page_name: 'Request List'
     },
 ]
-export default routes;
+

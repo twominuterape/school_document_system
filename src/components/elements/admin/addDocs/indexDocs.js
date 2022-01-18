@@ -37,6 +37,10 @@ import Slide from '@material-ui/core/Slide';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
+import { getData } from '../../../api/api';
+import axios from "axios"
+import { loading_page } from '../../loading'
+import Swal from 'sweetalert2'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -78,7 +82,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function LoginPg() {
     const [open, setOpen] = React.useState(false);
-
+    const [state,setState] = React.useState({
+        student_list : []
+    })
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -88,6 +94,17 @@ export default function LoginPg() {
     };
     const classes = useStyles();
     const History = useHistory()
+    React.useEffect(()=>{
+        loading_page()
+        axios.post('https://api.innovattosoft.com/users/students').then((res)=>{
+            Swal.close()
+            setState(prev=>({...prev,student_list:res.data}))
+        })
+
+        // getData('addingDocs/studentList').then((res)=>{
+        //         setState(prev=>({...prev,student_list:res.result.data}))
+        // })
+    },[])
     return (
         <React.Fragment>
             <>
@@ -105,7 +122,7 @@ export default function LoginPg() {
                     <Grid item xs={12} md={9}>
 
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    {/* <Grid item xs={12} md={3}>
                         <Card style={{ width: '100%' }}>
                             <div style={{ backgroundColor: '#b33939', display: 'flex', justifyContent: 'flex-start', padding: 2, paddingLeft: 5 }}>
                                 <Typography style={{ color: "#fff" }}>Filter</Typography>
@@ -158,35 +175,12 @@ export default function LoginPg() {
 
                             </CardContent>
                         </Card>
-                    </Grid>
-                    <Grid item xs={12} md={9}>
-                        <StudentList />
+                    </Grid> */}
+                    <Grid item xs={12} md={12}>
+                        <StudentList state={state}/>
                     </Grid>
                 </Grid>
-                <Dialog
-                    open={open}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={handleClose}
-                    aria-labelledby="alert-dialog-slide-title"
-                    aria-describedby="alert-dialog-slide-description"
-                >
-                    <DialogTitle id="alert-dialog-slide-title">{"Use Google's location service?"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
-                            Let Google help apps determine location. This means sending anonymous location data to
-                            Google, even when no apps are running.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Disagree
-                        </Button>
-                        <Button onClick={handleClose} color="primary">
-                            Agree
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+              
             </>
         </React.Fragment>
     );

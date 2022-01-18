@@ -7,6 +7,7 @@ import './App.css';
 import Routing from './components/navigation/router'
 import Loginpg from './components/loginpg/login'
 import AddDocs from './components/elements/admin/addDocs/indexDocs'
+import StudentRoute from './components/navigation/student_router'
 import {
   HashRouter ,
   Route,
@@ -21,7 +22,9 @@ function App() {
     {/* <Navigation/> */}
       {/* <Route exact path="/:user_id" component={LoadingScreen} /> */}
       <Route exact path="/" component={Loginpg} />
-      <Route  path="/wis" component={Routing} />
+      <Route  path="/wis/admin" component={Routing} />
+      <Route  path="/wis/" component={StudentRoute} />
+
       {/* <Route path="/pendingform" component={MainNav} />
       <Route path="/NewApplicationForm" component={NewApplicationForm} /> */}
     </HashRouter>
