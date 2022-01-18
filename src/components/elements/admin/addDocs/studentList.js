@@ -10,8 +10,10 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import TextField from '@material-ui/core/TextField';
-import {Card,CardContent, Grid } from '@material-ui/core';
+import {Card,CardContent, Grid,Tooltip } from '@material-ui/core';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+
 import {
   HashRouter as Router,
   Route,
@@ -21,29 +23,15 @@ import {
   useHistory
 } from "react-router-dom";
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
+  { id: 'schoolId', label: 'Student ID'},
+  { id: 'lastName', label: 'Last Name'},
+  { id: 'middleName', label: 'Middle Name'},
+  { id: 'firstName', label: 'First Name'},
+  { id: '', label: 'Department'},
+  // { id: 'student_course', label: 'Course'},
+
+
+ 
 
 ];
 
@@ -79,7 +67,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function StickyHeadTable() {
+export default function StickyHeadTable({state}) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -126,16 +114,19 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+            {state.student_list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow onClick={()=>{
-                  history.push('/wis/folder')
-                }} hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   <TableCell
                     style={{ display: 'flex', justifyContent: 'flex-start' }}
 
                   >
-                    <FolderOpenIcon style={{cursor:'pointer',color:'#ed9e21'}} />
+                    <Tooltip title="View">
+                    <CallMadeIcon onClick={()=>{
+                  history.push('/wis/admin/folder/'+row.userId)
+                }}  style={{cursor:'pointer',color:'#ed9e21'}} />
+
+                    </Tooltip>
                   </TableCell>
                   {columns.map((column) => {
                     const value = row[column.id];
@@ -155,7 +146,7 @@ export default function StickyHeadTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={state.student_list.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

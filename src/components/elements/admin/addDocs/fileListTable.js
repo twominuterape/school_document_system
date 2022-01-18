@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles,withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -29,9 +29,42 @@ import {
 import { loading_page } from '../../loading'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { Update } from '@material-ui/icons';
+import Backdrop from '@material-ui/core/Backdrop';
 let width = window.innerWidth;
-
+const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+      height: 13,
+      borderRadius: 5,
+    },
+    colorPrimary: {
+      backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+      borderRadius: 5,
+      backgroundColor: '#f1c40f',
+    },
+  }))(LinearProgress);
+  
+  // Inspired by the former Facebook spinners.
+  const useStylesFacebook = makeStyles((theme) => ({
+    root: {
+      position: 'relative',
+    },
+    bottom: {
+      color: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    top: {
+      color: '#f1c40f',
+      animationDuration: '550ms',
+      position: 'absolute',
+      left: 0,
+    },
+    circle: {
+      strokeLinecap: 'round',
+    },
+  }));
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -74,6 +107,25 @@ const useStyles = makeStyles({
         maxHeight: 400,
     },
 });
+const useStyles2 = makeStyles({
+    root: {
+      flexGrow: 1,
+     
+    },
+  });
+   function CustomizedProgressBars({percent}) {
+    const classes = useStyles2();
+  
+    return (
+      <div className={classes.root}>
+        <BorderLinearProgress variant="determinate" value={percent} />
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',width:'100%'}}>
+        <Typography style={{color:'#fff',fontWeight:'bold'}}>{percent}%</Typography>
+
+        </div>
+      </div>
+    );
+  }
 
 export default function StickyHeadTable() {
     const classes = useStyles();
@@ -95,7 +147,9 @@ export default function StickyHeadTable() {
         refresh: false,
         clear: false,
         addFileModal: false,
-        fileName: ""
+        fileName: "",
+        loading_modal:false,
+        percent:0
 
     })
     const actionButtonChange = (action) => {
@@ -137,7 +191,8 @@ export default function StickyHeadTable() {
 
     const upload = () => {
         setOpen(false)
-        loading_page()
+        // loading_page()
+        setState(prev=>({...prev,loading_modal:true}))
         let data = new FormData();
         for (let index = 0; index < state.file.length; index++) {
             const element = state.file[index];
@@ -159,12 +214,14 @@ export default function StickyHeadTable() {
                 const { loaded, total } = progressEvent;
                 let percent = Math.floor((loaded * 100) / total)
                 console.log(`${loaded}kb of ${total}kb | ${percent}`)
+                setState(prev=>({...prev,percent:percent}))
             }
         }
 
-        axios.post("http://localhost/test_api/addingDocs/uploadFile", data, config
+        axios.post("http://beta.gzonetechph.com/addingDocs/uploadFile", data, config
         ).then((res) => {
-            Swal.close()
+            setState(prev=>({...prev,loading_modal:false,percent:0}))
+
             if (!res.data.result.exist) {
                 Swal.fire({
                     position: 'center',
@@ -173,7 +230,7 @@ export default function StickyHeadTable() {
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    setState(prev => ({ ...prev, actionButtonType: '', selected_document: [], refresh: !state.refresh, file: [], selected_file_name: '', clear: false }))
+                    setState(prev => ({ ...prev, actionButtonType: '', selected_document: [], refresh: !state.refresh, file: [], selected_file_name: '', clear: false,percent:0 }))
 
                 })
             } else {
@@ -185,7 +242,7 @@ export default function StickyHeadTable() {
                     timer: 1500
                 }).then(() => {
                     handleClickOpen()
-                    setState(prev => ({ ...prev, actionButtonType: '', selected_document: [] }))
+                    setState(prev => ({ ...prev, actionButtonType: '', selected_document: [],percent:0 }))
 
                 })
             }
@@ -643,6 +700,24 @@ export default function StickyHeadTable() {
                         </DialogActions>
                     </form>
                 </Dialog>
+                <Backdrop 
+                    open={state.loading_modal}
+                    style={{zIndex:9999, display:'flex',
+                    paddingBottom:10,
+                    alignItems:'center',
+                    justifyContent:'center'}}
+                   
+                   >
+                        {/* <DialogContent> */}
+                        <div style={{width:width*0.35}}>
+                            <Typography variant='p' style={{fontSize:14,color:'#fff',fontWeight:'bold'}}>UPLOADING...</Typography>
+                        <CustomizedProgressBars percent={state.percent}/>
+
+                        </div>
+
+                        {/* </DialogContent> */}
+
+                </Backdrop>
 
 
             </>

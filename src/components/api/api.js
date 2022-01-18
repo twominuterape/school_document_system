@@ -1,7 +1,7 @@
 import axios from "axios"
 // import swal from "sweetalert/dist/sweetalert.min.js";
 // let serverurl = "http://api.pacificweb.com.ph/"; 
-let serverurl = "http://localhost/test_api/"; 
+let serverurl = "http://beta.gzonetechph.com/"; 
 // let serverurl ="http://192.168.0.9/backend/api/";
 // let serverurl ="http://192.168.0.10/backend/api.workflow/";
 // let serverurl = "http://beta.api.pacificweb.com.ph/";

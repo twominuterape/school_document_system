@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import Navigation from '../navigation/navigation'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {routes} from './routes'
+import { routes_student } from './routes'
 import { useSelector, useDispatch } from 'react-redux'
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -110,7 +110,6 @@ export default function LoginPg() {
         setOpen(false);
     };
     const [open, setOpen] = React.useState(true);
-    console.log('hehehe')
     return <div className="App">
         <Router>
             <div className={classes.root}>
@@ -121,24 +120,7 @@ export default function LoginPg() {
                     className={classes.appBar}
                 >
                     <Toolbar>
-                        <IconButton
-                            color="#7f8c8d"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            className={clsx(classes.menuButton, open && classes.hide)}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <IconButton
-                            color="#7f8c8d"
-                            aria-label="open drawer"
-                            onClick={handleDrawerClose}
-                            edge="start"
-                            className={clsx(classes.menuButton, !open && classes.hide)}
-                        >
-                            <ChevronLeftIcon />
-                        </IconButton>
+                     
                         <Typography variant="h6" noWrap style={{ fontWeight: 'bold', color: '#7f8c8d' }}>
                             Document Management System
                         </Typography>
@@ -148,7 +130,7 @@ export default function LoginPg() {
                     className={classes.drawer}
                     variant="persistent"
                     anchor="left"
-                    open={open}
+                    open={false}
                     classes={{
                         paper: classes.drawerPaper,
                     }}
@@ -180,8 +162,8 @@ export default function LoginPg() {
                         ))} */}
                     </List>
                     <List style={{ marginTop: `auto` }} >
-                    <Divider />
-                        <ListItem button style={{backgroundColor:'#b23232'}}>
+                        <Divider />
+                        <ListItem button style={{ backgroundColor: '#b23232' }}>
                             <ListItemText style={{ color: '#fff' }}>Logout</ListItemText>
                             <ExitToAppIcon style={{ color: '#fff' }} />
                         </ListItem>
@@ -195,8 +177,8 @@ export default function LoginPg() {
                         [classes.contentShift]: open,
                     })}
                 >
-                    <div className={classes.drawerHeader} />
-                    {routes.map((value, index) => {
+                     <div className={classes.drawerHeader} />
+                    {routes_student.map((value, index) => {
                         return <Route key={index} exact={value.exact} path={value.path} component={value.component} />
                     })}
                 </main>
