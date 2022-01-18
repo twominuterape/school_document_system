@@ -219,13 +219,7 @@ export default function StudentView({warningadmiss}) {
             <Grid item xs={12} md={6} >
                 <Typography variant="h4" >Student/Alumni Information:</Typography>
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16}}> Please fill-out the required information correctly.</Typography>
-                {warningadmiss === true &&
-                    <Card  style={{width:'100%',backgroundColor:'rgba(179, 57, 57,.9)',marginTop:10,marginBottom:10}}>
-                        <CardContent >
-                            <Typography style={{fontSize:16,marginTop:5,color:'#f5f6fa'}} >Admission section is required. </Typography>
-                        </CardContent>
-                    </Card>
-                }
+                
                 <Grid container spacing={1} style={{marginTop:10}}>
                     <Grid item xs={12} md={12} >
                         <TextField
@@ -472,6 +466,7 @@ export default function StudentView({warningadmiss}) {
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}}>
                         <Divider style={{marginBottom:10}}/>
+                       
                         <FormControl component="fieldset" required={true}>
                             <FormLabel component="legend">Basis of Admission</FormLabel>
                             <FormGroup>
@@ -483,6 +478,13 @@ export default function StudentView({warningadmiss}) {
                                 })}
                             </FormGroup>
                         </FormControl>
+                        {warningadmiss === true &&
+                            <Card  style={{width:'100%',backgroundColor:'rgba(179, 57, 57,.9)',marginTop:10,marginBottom:10}}>
+                                <CardContent >
+                                    <Typography style={{fontSize:16,marginTop:5,color:'#f5f6fa'}} >Admission section is required. </Typography>
+                                </CardContent>
+                            </Card>
+                        }
                         <Divider style={{marginTop:10}}/>
                     </Grid>
 
