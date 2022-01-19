@@ -263,7 +263,7 @@ export default function FileStorage() {
        })
     }
     const getFiles = (data,file_id) =>{
-        history.push('/wis/admin/fileStorageList/'+data+'/'+file_id+'/'+user_id)
+        history.push('/fileStorageList/'+data+'/'+file_id+'/'+user_id)
         
     }
 
@@ -274,7 +274,7 @@ export default function FileStorage() {
                
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
                 
-                <Link color="inherit" href="/#/wis/admin/documents">Back</Link>
+                <Link color="inherit" href="#/">Back</Link>
             
                     <Link color="inherit" href="/">Home Page</Link>
                     <Typography color="textPrimary">Folder</Typography>

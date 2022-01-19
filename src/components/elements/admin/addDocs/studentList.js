@@ -71,6 +71,8 @@ export default function StickyHeadTable({state}) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [searchDriver, setSearchDriver] = React.useState('');
+
   const history = useHistory()
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -80,6 +82,15 @@ export default function StickyHeadTable({state}) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  let StudentList = state.student_list.filter(
+    (files) => {
+        return  files.lastName.toLowerCase().indexOf(
+                searchDriver.toLocaleLowerCase()) !== -1
+            || files.firstName.toLowerCase().indexOf(
+                searchDriver.toLocaleLowerCase()) !== -1  || files.schoolId.toLowerCase().indexOf(
+                  searchDriver.toLocaleLowerCase()) !== -1
+    }
+)
   return (
     <Card className={classes.root}>
       <CardContent>
@@ -87,7 +98,7 @@ export default function StickyHeadTable({state}) {
      
       <Grid container spacing={1}>
     <Grid item xs={12} md={4}>
-    <TextField style={{ width: '100%' }} size='small' label='Search' variant='outlined' />
+    <TextField onChange={(e)=>setSearchDriver(e.target.value)}style={{ width: '100%' }} size='small' label='Search' variant='outlined' />
     </Grid>
     <Grid item xs={12} md={12}>
   
@@ -114,7 +125,7 @@ export default function StickyHeadTable({state}) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.student_list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+            {StudentList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   <TableCell
@@ -123,7 +134,7 @@ export default function StickyHeadTable({state}) {
                   >
                     <Tooltip title="View">
                     <CallMadeIcon onClick={()=>{
-                  history.push('/wis/admin/folder/'+row.userId)
+                  history.push('/folder/'+row.userId)
                 }}  style={{cursor:'pointer',color:'#ed9e21'}} />
 
                     </Tooltip>
@@ -146,7 +157,7 @@ export default function StickyHeadTable({state}) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={state.student_list.length}
+        count={StudentList.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

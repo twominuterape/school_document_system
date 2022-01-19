@@ -46,7 +46,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { getData } from '../../../api/api';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import CloseIcon from '@material-ui/icons/Close';
-import AttachIcon from './attachIcon.png'
+// import AttachIcon from './attachIcon.png'
 import { loading_page } from '../../loading'
 import CachedIcon from '@material-ui/icons/Cached';
 import Swal from 'sweetalert2';
@@ -266,6 +266,64 @@ export default function LoginPg() {
 
                         </Card>
                     </Grid> */}
+                    <Grid  item xs={12} md={12}>
+                    <Card variant='outlined'>
+                    <CardContent>
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} md={3}>
+                                <Card variant='outlined'>
+                                    <CardContent>
+                                        <div style={{ display: 'flex' }}>
+                                            <Typography variant='p' className={classes.cardFont}>Approved</Typography>
+                                        </div>
+                                        <Typography style={{fontSize:30,fontWeight:'bold'}}>{state.requestList.reduce((count,val)=>{
+                                            if(val.status === 'Approved'){
+                                                count++
+                                            }
+                                            return count
+                                        },0)}</Typography>
+
+
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <Card variant='outlined'>
+                                    <CardContent>
+                                        <div style={{ display: 'flex' }}>
+                                            <Typography  variant='p'  className={classes.cardFont}>Pending</Typography>
+                                        </div>
+                                        <Typography style={{fontSize:30,fontWeight:'bold'}}>{state.requestList.reduce((count,val)=>{
+                                            if(val.status === 'Pending'){
+                                                count++
+                                            }
+                                            return count
+                                        },0)}</Typography>
+
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <Card variant='outlined'>
+                                    <CardContent>
+                                        <div style={{ display: 'flex' }}>
+                                            <Typography variant='p'  className={classes.cardFont}>Denied</Typography>
+                                        </div>
+                                        <Typography style={{fontSize:30,fontWeight:'bold'}}>{state.requestList.reduce((count,val)=>{
+                                            if(val.status === 'Denied'){
+                                                count++
+                                            }
+                                            return count
+                                        },0)}</Typography>
+
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+
+                    </Grid>
                     <Grid item xs={12} md={4}>
                         <Grid container spacing={1}>
                             <Grid item xs={12} md={6} >

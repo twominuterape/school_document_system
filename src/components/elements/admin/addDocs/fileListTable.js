@@ -375,7 +375,7 @@ export default function StickyHeadTable() {
 
             <>
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
-                    <Link color="inherit" href={"/#/wis/admin/folder/"+user_id}>Back</Link>
+                    <Link color="inherit" href={"#/folder/"+user_id}>Back</Link>
                     <Link color="inherit" href="/">Home Page</Link>
                     <Typography color="textPrimary">Files</Typography>
                     <Typography color="textPrimary">{toTitleCase(folderName)}</Typography>
@@ -470,7 +470,7 @@ export default function StickyHeadTable() {
                                                                         <CallMadeIcon onClick={() => {
                                                                             // alert('hehehe')
                                                                             // window.open("C:/xampp/htdocs/test_api/assets/docs_files/"+row.document_name,'_blank').focus()
-                                                                            window.open('C:/xampp/htdocs/test_api/assets/docs_files/' + row.document_name);
+                                                                            window.open('https://images.workflow.gzonetechph.com/documents_wis/' + row.document_name);
                                                                         }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: 5 }} />
                                                                         {/* </NewLink> */}
                                                                     </Tooltip>
@@ -633,7 +633,7 @@ export default function StickyHeadTable() {
                                     <DropzoneArea
                                         filesLimit={1}
                                         className={classes.drop_zone_area}
-                                        acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx"]}
+                                        acceptedFiles={[".csv,.xlsx,text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values,.pdf,.docx,.png,.jpg"]}
                                         onChange={handleChangeFile}
                                         showFileNames={true}
                                         maxFileSize={500800000}

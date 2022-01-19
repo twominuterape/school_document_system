@@ -19,25 +19,25 @@ export const routes = [
     // },
    
     {
-        path: '/wis/admin/documents',
-        exact: false,
+        path: '/',
+        exact: true,
         component: AddDocuments,
         page_name: 'Adding Documents'
     },
     {
-        path: '/wis/admin/folder/:user_id',
+        path: '/folder/:user_id',
         exact: false,
         component: FileStorage,
         page_name: 'File Storage'
     },
     {
-        path: '/wis/admin/fileStorageList/:folderName/:category_id/:user_id',
+        path: '/fileStorageList/:folderName/:category_id/:user_id',
         exact: false,
         component: FileStorageList,
         page_name: 'File Storage List'
     },
     {
-        path: '/wis/admin/requests',
+        path: '/requests',
         exact: false,
         component: RequestIndex,
         page_name: 'Requests'

@@ -17,13 +17,19 @@ import {
 } from "react-router-dom";
 
 function App() {
+  let login = localStorage.getItem('l')
   return (
     <HashRouter>
     {/* <Navigation/> */}
       {/* <Route exact path="/:user_id" component={LoadingScreen} /> */}
+      {login == null?
       <Route exact path="/" component={Loginpg} />
-      <Route  path="/wis/admin" component={Routing} />
-      <Route  path="/wis/" component={StudentRoute} />
+
+      :
+      <Route  path="/" component={Routing} />
+
+      }
+      {/* <Route  path="/wis/" component={StudentRoute} /> */}
 
       {/* <Route path="/pendingform" component={MainNav} />
       <Route path="/NewApplicationForm" component={NewApplicationForm} /> */}

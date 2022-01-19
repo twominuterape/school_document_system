@@ -77,7 +77,9 @@ export default function LoginPg() {
       password:""
     }
     if(username === "admin" && password === "12345678"){
-      History.push('/wis/admin/document')
+      History.push('/')
+      localStorage.setItem('l',1)
+      window.location.reload()
     }else{
       Swal.fire({
         position: 'center',

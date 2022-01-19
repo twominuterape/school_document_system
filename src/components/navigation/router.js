@@ -110,6 +110,14 @@ export default function LoginPg() {
         setOpen(false);
     };
     const [open, setOpen] = React.useState(true);
+    const logout = () => {
+        localStorage.clear();
+        // window.location.replace(websitelink);
+        window.location.replace("http://admin.docsystem.online")
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      };
     console.log('hehehe')
     return <div className="App">
         <Router>
@@ -164,11 +172,11 @@ export default function LoginPg() {
                     </div>
                     <Divider />
                     <List>
-                        <ListItem component={NewLink} to="/wis/admin/documents/" button >
+                        <ListItem component={NewLink} to="  /" button >
                             <ListItemIcon > <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Documents'} style={{ color: '#fff' }} />
                         </ListItem>
-                        <ListItem  component={NewLink} to="/wis/admin/requests/"  button >
+                        <ListItem  component={NewLink} to="/requests/"  button >
                             <ListItemIcon> <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Requests'} style={{ color: '#fff' }} />
                         </ListItem>
@@ -181,7 +189,7 @@ export default function LoginPg() {
                     </List>
                     <List style={{ marginTop: `auto` }} >
                     <Divider />
-                        <ListItem button style={{backgroundColor:'#b23232'}}>
+                        <ListItem onClick = {()=>{logout()}}button style={{backgroundColor:'#b23232'}}>
                             <ListItemText style={{ color: '#fff' }}>Logout</ListItemText>
                             <ExitToAppIcon style={{ color: '#fff' }} />
                         </ListItem>
@@ -197,6 +205,7 @@ export default function LoginPg() {
                 >
                     <div className={classes.drawerHeader} />
                     {routes.map((value, index) => {
+                        console.log(value)
                         return <Route key={index} exact={value.exact} path={value.path} component={value.component} />
                     })}
                 </main>
