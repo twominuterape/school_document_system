@@ -33,6 +33,7 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 const drawerWidth = 240;
 
+let width = window.innerWidth;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,7 +111,7 @@ export default function LoginPg() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(width < 650 ?false:true);
     const logout = () => {
         localStorage.clear();
         // window.location.replace(websitelink);
@@ -173,11 +174,19 @@ export default function LoginPg() {
                     </div>
                     <Divider />
                     <List>
-                        <ListItem component={NewLink} to="/" button >
+                        <ListItem component={NewLink} to="/" button onClick={()=>{
+                            if(width<650){
+                                handleDrawerClose()
+                            }
+                        }}>
                             <ListItemIcon > <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Documents'} style={{ color: '#fff' }} />
                         </ListItem>
-                        <ListItem  component={NewLink} to="/requests/"  button >
+                        <ListItem  component={NewLink} to="/requests/"  button onClick={()=>{
+                             if(width<650){
+                                handleDrawerClose()
+                            }
+                        }}>
                             <ListItemIcon> <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Requests'} style={{ color: '#fff' }} />
                         </ListItem>
