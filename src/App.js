@@ -21,9 +21,9 @@ function App() {
     <HashRouter>
     {/* <Navigation/> */}
       {/* <Route exact path="/:user_id" component={LoadingScreen} /> */}
-      <Route exact path="/" component={Loginpg} />
-      <Route  path="/wis/admin" component={Routing} />
-      <Route  path="/wis/" component={StudentRoute} />
+      {/* <Route exact path="/" component={Loginpg} />
+      <Route  path="/wis/admin" component={Routing} /> */}
+      <Route  exact path="/" component={StudentRoute} />
 
       {/* <Route path="/pendingform" component={MainNav} />
       <Route path="/NewApplicationForm" component={NewApplicationForm} /> */}
