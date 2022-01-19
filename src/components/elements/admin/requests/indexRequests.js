@@ -554,26 +554,26 @@ export default function LoginPg() {
                                     </Grid>
                                 </CardContent>
                             </Card>
-                            <Grid container spacing={1}>
+                            <Grid container spacing={1} style={{marginTop:10}}>
                                 <Grid item xs={12} md={8} >
                                 </Grid>
                                 {state.selectedReq.status == 'Pending' &&
                                     <Grid container item xs={12} md={2} justify='flex-end'>
-                                        <Button onClick={() => { onSubmitApproved('Denied') }} style={{ width: width < 600 ? '100%' : undefined, background: '#e74c3c', color: '#fff', fontWeight: "bold", marginTop: 10 }} variant="contained">
+                                        <Button onClick={() => { onSubmitApproved('Denied') }} style={{ width: width < 700 ? '100%' : undefined, background: '#e74c3c', color: '#fff', fontWeight: "bold", }} variant="contained">
                                             Deny
                                         </Button>
                                     </Grid>
                                 }
                                 {state.selectedReq.status == 'Pending' &&
                                     <Grid container item xs={12} md={2} justify='flex-end'>
-                                        <Button onClick={() => { onSubmitApproved('Approved') }} style={{ width: width < 600 ? '100%' : undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold", marginTop: 10 }} variant="contained">
+                                        <Button onClick={() => { onSubmitApproved('Approved') }} style={{ width: width < 700 ? '100%' : undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold", }} variant="contained">
                                             Approve
                                         </Button>
                                     </Grid>
                                 }
                                  {(state.selectedReq.status == 'Approved' || state.selectedReq.status == 'Denied') &&
                                     <Grid container item xs={12} md={4} justify='flex-end'>
-                                        <Button onClick={() => { onSubmitApproved('Pending') }} style={{ width: width < 600 ? '100%' : undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold", marginTop: 10 }} variant="contained">
+                                        <Button onClick={() => { onSubmitApproved('Pending') }} style={{ width: width < 700 ? '100%' : undefined, background: '#ed9e21', color: '#fff', fontWeight: "bold", }} variant="contained">
                                             Undo
                                         </Button>
                                     </Grid>

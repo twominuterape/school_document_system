@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         width: drawerWidth,
         backgroundColor: '#b64444',
+     
         // backgroundImage: `linear-gradient(to right,#636e72,#5b6366)`,
 
     },
@@ -119,7 +120,7 @@ export default function LoginPg() {
         }, 500);
       };
     console.log('hehehe')
-    return <div className="App">
+    return <div className="App" >
         <Router>
             <div className={classes.root}>
                 <CssBaseline />
@@ -172,7 +173,7 @@ export default function LoginPg() {
                     </div>
                     <Divider />
                     <List>
-                        <ListItem component={NewLink} to="  /" button >
+                        <ListItem component={NewLink} to="/" button >
                             <ListItemIcon > <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Documents'} style={{ color: '#fff' }} />
                         </ListItem>
