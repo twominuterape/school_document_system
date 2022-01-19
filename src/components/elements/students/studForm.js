@@ -318,9 +318,8 @@ export default function StudentView({warningadmiss}) {
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                {certificationType.map((value, index) => {
-                                    return <MenuItem value={value.type} key={index}>{value.type}</MenuItem>
-                                })}
+                                <MenuItem value="Graduate">Graduate</MenuItem>
+                                <MenuItem value="Undergraduate">Undergraduate</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
