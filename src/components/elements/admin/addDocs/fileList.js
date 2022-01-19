@@ -244,22 +244,18 @@ export default function FileStorage() {
 
         const options = {
             onUploadProgess : (progressEvent)=>{
-                console.log('heheheh')
                 const {loaded,total} = progressEvent;
                 let percent = Math.floor((loaded * 100) / total)
-                console.log(`${loaded}kb of ${total}kb | ${percent}`)
             }
         }
         const config = {
             onUploadProgress: progressEvent => {
                 const {loaded,total} = progressEvent;
                 let percent = Math.floor((loaded * 100) / total)
-                console.log(percent)
             }
         }
        axios.post("http://localhost/test_api/addingDocs/uploadFile",data,config
       ).then((res)=>{
-           console.log(res)
        })
     }
     const getFiles = (data,file_id) =>{

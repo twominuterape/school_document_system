@@ -172,7 +172,6 @@ export default function StickyHeadTable() {
         setPage(0);
     };
     const handleChangeFile = (files) => {
-        console.log(files)
         setState({
             ...state,
             file: files,
@@ -191,8 +190,8 @@ export default function StickyHeadTable() {
 
     const upload = () => {
         setOpen(false)
-        // loading_page()
-        setState(prev=>({...prev,loading_modal:true}))
+        loading_page()
+        // setState(prev=>({...prev,loading_modal:true}))
         let data = new FormData();
         for (let index = 0; index < state.file.length; index++) {
             const element = state.file[index];
@@ -213,39 +212,43 @@ export default function StickyHeadTable() {
             onUploadProgress: progressEvent => {
                 const { loaded, total } = progressEvent;
                 let percent = Math.floor((loaded * 100) / total)
-                console.log(`${loaded}kb of ${total}kb | ${percent}`)
-                setState(prev=>({...prev,percent:percent}))
+                // console.log(`${loaded}kb of ${total}kb | ${percent}`)
+                // setState(prev=>({...prev,percent:percent}))
             }
         }
 
         axios.post("http://beta.gzonetechph.com/addingDocs/uploadFile", data, config
         ).then((res) => {
-            setState(prev=>({...prev,loading_modal:false,percent:0}))
+            Swal.close()
+            // if(state.percent == 100){
+                // setState(prev=>({...prev,loading_modal:false,percent:0}))    
 
-            if (!res.data.result.exist) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    html: 'Success',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    setState(prev => ({ ...prev, actionButtonType: '', selected_document: [], refresh: !state.refresh, file: [], selected_file_name: '', clear: false,percent:0 }))
-
-                })
-            } else {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'warning',
-                    html: 'File name already exist',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    handleClickOpen()
-                    setState(prev => ({ ...prev, actionButtonType: '', selected_document: [],percent:0 }))
-
-                })
-            }
+                if (!res.data.result.exist) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        html: 'Success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        setState(prev => ({ ...prev, actionButtonType: '', selected_document: [], refresh: !state.refresh, file: [], selected_file_name: '', clear: false,percent:0 }))
+    
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'warning',
+                        html: 'File name already exist',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        handleClickOpen()
+                        setState(prev => ({ ...prev, actionButtonType: '', selected_document: [],percent:0 }))
+    
+                    })
+                }
+            // }
+         
         })
     }
     React.useEffect(() => {
