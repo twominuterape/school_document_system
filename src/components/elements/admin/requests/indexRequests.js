@@ -543,7 +543,9 @@ export default function LoginPg() {
                                                 state.selectedReq.receipt_file != "" && state.selectedReq.receipt_file != null ?
                                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                         <Typography variant='p' style={{ fontSize: 15 }}>Proof of Payment</Typography>
-                                                        <img src={'https://images.workflow.gzonetechph.com/documents_wis/' + state.selectedReq.receipt_file} style={{ width: 100, height: 100, cursor: 'pointer' }} />
+                                                        <img  onClick={() => {
+                                                            window.open('https://images.workflow.gzonetechph.com/documents_wis/' + state.selectedReq.receipt_file)
+                                                        }} src={'https://images.workflow.gzonetechph.com/documents_wis/' + state.selectedReq.receipt_file} style={{ width: 100, height: 100, cursor: 'pointer' }} />
                                                     </div>
                                                     : undefined
                                             }
