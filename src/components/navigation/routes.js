@@ -42,13 +42,13 @@ export const routes = [
 export const routes_student = [
    
     {
-        path: '/wis',
+        path: '/',
         exact: true,
         component: reqDocuments,
         page_name: 'Documents Request'
     },
     {
-        path: '/wis/requestList/',
+        path: '/requestList/',
         exact: false,
         component: RequestIndex,
         page_name: 'Request List'
