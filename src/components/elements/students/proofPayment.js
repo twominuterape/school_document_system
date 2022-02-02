@@ -116,6 +116,7 @@ export default function ProofView() {
 
     const Dispatch = useDispatch();
     const ReceiptFile = useSelector(state => state.reqDocsReducer.receiptCopy)
+    const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
 
     
     const handleClose = () => {
@@ -135,6 +136,15 @@ export default function ProofView() {
             receiptImage:[],
         })
         setfiles([])
+    };
+
+    const handleClaim = (event) => {
+        Dispatch({
+            type:'passStudForm',
+            studentdetails:{
+                'claimtype': event.target.value
+            },
+        })
     };
 
     useEffect(()=>{
@@ -218,6 +228,23 @@ export default function ProofView() {
                         Account Name: Westmead International School Inc.<br/>
                         Account Number: 012598000438
                     </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} style={{marginTop:10}}>
+                        <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }} size={"small"} required={true}>
+                            <InputLabel id="demo-simple-select-outlined-label">Type of claiming document(s) </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-outlined-label"
+                                id="demo-simple-select-outlined"
+                                value={student_Input.claimtype}
+                                onChange={handleClaim}
+                                label="Type of claiming document(s)">
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value="Onsite">Onsite</MenuItem>
+                                <MenuItem value="Deliver">Deliver</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} md={12} >
                         <Button

@@ -49,10 +49,13 @@ import DocsView from './docsForm'
 import StudentView from './studForm'
 import ProofView from './proofPayment'
 import { useDispatch,useSelector } from 'react-redux'
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { getData } from '../../api/api'
 import axios from "axios"
 import Swal from 'sweetalert2'
 import { loading_page } from '../loading'
+import StudentOTP from './studentOTP'
+import WestmeadLogo from '../../assets/westm.jpeg'
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -93,47 +96,14 @@ export default function LoginPg() {
     const History = useHistory()
     const [open, setOpen] = React.useState(false);
     const [warning, setwarning] = React.useState(false);
+    const [displayOTP, setdisplayOTP] = React.useState(true);
     const [warningadmiss, setwarningadmiss] = React.useState(false);
-    const [docstype, setdocstype] = React.useState([
-        {type:'Diploma'},
-        {type:'Transcript of Records (TOR)'},
-        {type:'Certification'},
-        {type:'Transfer Credentials'},
-        {type:'CAV Credentials'},
-        {type:'Certified True Copy of Document'},
-    ]);
 
-    const [state, setState] = React.useState({
-        checkedA: true,
-        checkedB: true,
-        checkedF: true,
-        checkedG: true,
-      });
+    const [otpview, setotpview] = React.useState("");
+    const [createdOTP, setcreatedOTP] = React.useState("");
+    const [insertedTOP, setinsertedTOP] = React.useState("");
 
-    const [torType, settorType] = React.useState([
-        {type:'Personal Copy'},
-        {type:'Employment'},
-        {type:'Graduate School'},
-        {type:'Transfer Credentials'},
-        {type:'Scholarship Application'},
-        {type:'Transfer / Evaluation'},
-        {type:'Lisensure Examination'},
-        {type:'Others'},
-        {type:'Not Applicable'},
-    ]);
-
-    const [certificationType, setcertificationType] = React.useState([
-        {type:'General Weighted Average (GWA)'},
-        {type:'Enrollment'},
-        {type:'Graduation'},
-        {type:'Good Moral Character (for Licensure Exam)'},
-        {type:'Good Moral Character (for Transfer)'},
-        {type:'Eligibility to Transfer (Undergraduate)'},
-        {type:'Eligibility to Transfer (for Graduate School)'},
-        {type:'English as Medium of Instruction'},
-        {type:'Not Applicable'},
-    ]);
-    const [age, setAge] = React.useState('');
+    const [generatedOTP, setgeneratedOTP] = React.useState(false);
     const [FormCount, setFormCount] = React.useState(0);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
@@ -147,12 +117,21 @@ export default function LoginPg() {
     const ReceiptFile = useSelector(state => state.reqDocsReducer.receiptCopy)
     const CertifiedFiles = useSelector(state => state.reqDocsReducer.certifiedCopy)
 
+    const username_ = useSelector(state => state.reqDocsReducer.username)
+    const password_ = useSelector(state => state.reqDocsReducer.password)
+
+    const studentsRecord = useSelector(state => state.studData.studentRecords)
+
     const handleClickOpen = () => {
         setOpen(true);
     };
     
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleCloseOTP = () => {
+        setgeneratedOTP(false);
     };
 
     const handleNext = (e) => {
@@ -198,6 +177,7 @@ export default function LoginPg() {
                 appliedFor:JSON.stringify(ApplyFor),
                 tor_type:tor_selectedType,
                 cert_type:certificate_type,
+                claimtype:student_Input.claimtype,
                 status:'Pending'
             }
             for (let index = 0; index < CertifiedFiles.length; index++) {
@@ -213,7 +193,6 @@ export default function LoginPg() {
                 onUploadProgress: progressEvent => {
                     const { loaded, total } = progressEvent;
                     let percent = Math.floor((loaded * 100) / total)
-                    console.log(`${loaded}kb of ${total}kb | ${percent}`)
                     // setState(prev=>({...prev,percent:percent}))
                 }
             }
@@ -266,7 +245,7 @@ export default function LoginPg() {
                 }else{
                     Swal.fire({
                         position: 'center',
-                        icon: 'success',
+                        icon: 'warning',
                         html: 'Failed to post your request. Please try again',
                         showConfirmButton: false,
                         timer: 1500
@@ -279,15 +258,89 @@ export default function LoginPg() {
         
     };
 
+    const handleRequet=(e)=>{
+        e.preventDefault()
+        setgeneratedOTP(false)
+        let restruct = JSON.parse(studentsRecord)
+        const filtered_pin = restruct.filter(function(item){
+            return String(item.schoolId).toUpperCase() === String(username_).toUpperCase();
+        })
+        if(filtered_pin.length > 0){
+            setgeneratedOTP(true)
+            setotpview("addOTP")
+           
+        }else{
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                html: 'Student id not found. Please try again',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                console.log('fail')
+                setgeneratedOTP(true);})
+        }
+    }
+
+    const sentOTP=()=>{
+        var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var otpGenerated = '';
+        for ( var i = 0; i < 6; i++ ) {
+            otpGenerated += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        }
+        let usercredentials = {
+            username:username_,
+            password:password_,
+            otpGenerated:otpGenerated,
+        }
+        getData('Application_form/sendmailingaddress',usercredentials).then((res) => {
+            setcreatedOTP(otpGenerated)
+        })
+    }
+
+    const handleChange = (prop) => (event) => {
+        setinsertedTOP(event.target.value)
+    };
+
+    const submitCode=()=>{
+        if(createdOTP === ""){
+            alert('Invalid inserted OTP')
+        }else{
+            if(createdOTP === insertedTOP){
+                setgeneratedOTP(false)
+            }else{
+                alert('Invalid inserted OTP')
+            }
+        }
+        
+    }
+
+    const getStudents=()=>{
+        loading_page()
+        axios.post('https://api.innovattosoft.com/users/students').then((res)=>{
+            Swal.close()
+            Dispatch({
+                type:'passStudRecords',
+                passStudents:JSON.stringify(res.data),
+            })
+            setgeneratedOTP(true)
+        })
+    }
+
+
+
     useEffect(()=>{
-        console.log(docstype)
+        if(studentsRecord === ""){
+            getStudents()
+        }
     },[])
+
     return (
         <React.Fragment>
             <Container>
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
-                    <Link color="inherit" href="/">Home Page</Link>
-                    <Typography color="textPrimary">Student List</Typography>
+                    <Link color="inherit" href="/">Document Portal</Link>
+                    <Typography color="textPrimary">Index</Typography>
                 </Breadcrumbs>
                 <Grid  spacing={1} >
                     <Grid  item xs={12} md={12}>
@@ -362,6 +415,65 @@ export default function LoginPg() {
                 <DialogActions>
                    
                 </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={generatedOTP}
+                onClose={handleClose}
+                maxWidth="xs"
+                aria-labelledby="responsive-dialog-title">
+                <DialogTitle id="responsive-dialog-title"></DialogTitle>
+                <DialogContent>
+                    <div style={{height:'90%',display:'flex',alignItems:'center',justifyContent:'center',width:'100%',marginBottom:15}}>
+                        <div>
+                            <center>
+                                <img src={WestmeadLogo} style={{width:180,height:200}} />
+                                <Typography variant="h4" style={{fontWeight:'bold',color:'#4b4b4b'}}> LOGIN PORTAL</Typography>
+                                <Divider style={{marginBottom:5,marginTop:5,width:'90%'}}/>
+                            </center><br/>
+                            {otpview === ""
+                                ? <form onSubmit={handleRequet}>
+                                        <StudentOTP/>
+                                        <center>
+                                            <Button type="submt" variant="contained" color="primary" style={{width:'90%',marginTop:20}} size="large">
+                                                Next
+                                            </Button>
+                                        </center>
+                                    </form>
+                                :<>
+                                    <Grid container spacing={1} >
+                                        <Grid item xs={12} md={12}><TextField style={{ visibility: 'hidden' }} size="large" disabled /></Grid>
+                                        <Grid item xs={12} md={12} >
+                                            <center>
+                                                <OutlinedInput
+                                                    id="outlined-adornment-weight"
+                                                    value={insertedTOP}
+                                                    size="large"
+                                                    style={{ width: '90%' }}
+                                                    onChange={handleChange()}
+                                                    endAdornment={<InputAdornment onClick={() => sentOTP()} style={{ cursor: 'pointer' }} position="end">Send code</InputAdornment>}
+                                                    aria-describedby="outlined-weight-helper-text"
+                                                    inputProps={{
+                                                        'aria-label': 'weight',
+                                                    }}
+                                                    labelWidth={0}
+                                                />
+                                            </center>
+                                        </Grid>
+                                    </Grid>
+                                    <center>
+                                        <Button onClick={() => submitCode()} type="submt" variant="contained" color="primary" style={{ width: '90%', marginTop: 20 }} size="large">
+                                            Submit
+                                        </Button>
+                                    </center>
+                                </>
+                               
+                            }
+                           
+                        </div>
+                    </div>
+                </DialogContent>
+                <DialogActions/>
             </Dialog>
         </React.Fragment>
     );
