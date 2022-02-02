@@ -41,6 +41,7 @@ import { getData } from '../../../api/api';
 import axios from "axios"
 import { loading_page } from '../../loading'
 import Swal from 'sweetalert2'
+import { useDispatch,useSelector } from 'react-redux'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -82,6 +83,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function LoginPg() {
     const [open, setOpen] = React.useState(false);
+    const adminReducer = useSelector(state => state.adminReducer)
+    const dispatch = useDispatch();
     const [state,setState] = React.useState({
         student_list : []
     })
@@ -99,6 +102,10 @@ export default function LoginPg() {
         axios.post('https://api.innovattosoft.com/users/students').then((res)=>{
             Swal.close()
             setState(prev=>({...prev,student_list:res.data}))
+            dispatch({
+                type:'onChangeAdminRedicer',
+                data:{masterList:res.data}
+            })
         })
 
         // getData('addingDocs/studentList').then((res)=>{

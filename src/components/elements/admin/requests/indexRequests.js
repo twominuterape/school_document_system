@@ -47,10 +47,11 @@ import { getData } from '../../../api/api';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import CloseIcon from '@material-ui/icons/Close';
 // import AttachIcon from './attachIcon.png'
+import moment from 'moment'
 import { loading_page } from '../../loading'
 import CachedIcon from '@material-ui/icons/Cached';
 import Swal from 'sweetalert2';
-
+import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -61,6 +62,9 @@ const columns = [
     { id: 'lname', label: 'Name' },
     { id: 'department', label: 'Department' },
     { id: 'degree', label: 'Degree' },
+ 
+    // { id: 'req_date_claimed', label: 'Date Claimed' },
+
 
 ];
 
@@ -162,13 +166,13 @@ export default function LoginPg() {
             return files.fname.toLowerCase().indexOf(
                 state.searchDriver.toLocaleLowerCase()) !== -1 || files.lname.toLowerCase().indexOf(
                     state.searchDriver.toLocaleLowerCase()) !== -1
-                || files.fname.toLowerCase().indexOf(
+                || files.form_id.toLowerCase().indexOf(
                     state.searchDriver.toLocaleLowerCase()) !== -1
         }
     )
     const onSubmitFilter = () => {
         let filter = []
-        if (state.statusFilter === "ALL") {
+        if (state.statusFilter === "All") {
             filter = state.requestList
         } else {
             filter = state.requestList.filter((val) => (val.status === state.statusFilter))
@@ -226,6 +230,41 @@ export default function LoginPg() {
         })
 
     }
+    const onSubmitClaim = (status,id) => {
+        // setOpen(false)
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to change status to "+status,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                loading_page()
+                getData('requests/changeStatus', { form_id:id, status: status }).then((res) => {
+                    Swal.close()
+                    if (res.status == true) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            html: 'Success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            setState(prev => ({ ...prev, selectedReq: [], refresh: !state.refresh }))
+                        })
+                    } else {
+                        // setOpen(true)
+                    }
+                    // setState(prev => ({ ...prev, requestList: res.result.data, requestListDisplay: res.result.data }))
+                })
+            }
+        })
+
+    }
     return (
         <React.Fragment>
             <>
@@ -270,6 +309,23 @@ export default function LoginPg() {
                     <Card variant='outlined'>
                     <CardContent>
                         <Grid container spacing={1}>
+                        <Grid item xs={12} md={3}>
+                                <Card variant='outlined'>
+                                    <CardContent>
+                                        <div style={{ display: 'flex' }}>
+                                            <Typography variant='p' className={classes.cardFont}>Released</Typography>
+                                        </div>
+                                        <Typography style={{fontSize:30,fontWeight:'bold'}}>{state.requestList.reduce((count,val)=>{
+                                            if(val.status === 'Released'){
+                                                count++
+                                            }
+                                            return count
+                                        },0)}</Typography>
+
+
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                             <Grid item xs={12} md={3}>
                                 <Card variant='outlined'>
                                     <CardContent>
@@ -337,12 +393,12 @@ export default function LoginPg() {
                                         style={{ textAlign: 'left' }}
                                     >
                                         <MenuItem value="">
-                                            <em>None</em>
+                                            {/* <em>None</em> */}
                                         </MenuItem>
                                         <MenuItem value={"All"}>All</MenuItem>
-                                        <MenuItem value={"Pending"}>Pending</MenuItem>
                                         <MenuItem value={"Approved"}>Approved</MenuItem>
-
+                                        <MenuItem value={"Released"}>Released</MenuItem>
+                                        <MenuItem value={"Pending"}>Pending</MenuItem>
 
                                     </Select>
                                 </FormControl>
@@ -362,7 +418,7 @@ export default function LoginPg() {
                     <Grid item xs={12} md={5}></Grid>
 
                     <Grid container item xs={12} md={3} justify='flex-end'>
-                        <TextField onChange={onChangeText} name='searchDriver' style={{ width: '100%' }} variant='outlined' size='small' label="Search Name"></TextField>
+                        <TextField onChange={onChangeText} name='searchDriver' style={{ width: '100%' }} variant='outlined' size='small' label="Search Name / Request ID"></TextField>
                     </Grid>
 
                     <Grid item xs={12} md={12}>
@@ -382,7 +438,7 @@ export default function LoginPg() {
                                                 <TableCell
                                                     key={column.id}
                                                     align={column.align}
-                                                    style={{ minWidth: column.minWidth, backgroundColor: '#b23232', color: '#fff' }}
+                                                    style={{ minWidth: column.minWidth, backgroundColor: '#b23232', color: '#fff',whiteSpace:'nowrap' }}
                                                 >
                                                     {column.label}
                                                 </TableCell>
@@ -397,21 +453,40 @@ export default function LoginPg() {
                                             >
                                                 Status
                                             </TableCell>
+                                            <TableCell
+                                                style={{ backgroundColor: '#b23232', color: '#fff',whiteSpace:'nowrap' }}
+                                            >
+                                                Date Request
+                                            </TableCell>  <TableCell
+                                                style={{ backgroundColor: '#b23232', color: '#fff',whiteSpace:'nowrap'  }}
+                                            >
+                                                Date Approved
+                                            </TableCell>
 
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {RequestList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-
+                                           
                                             return (
                                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                                     <TableCell
-
+ style={{whiteSpace:'nowrap' }}
                                                     >
                                                         <CallMadeIcon onClick={() => {
                                                             handleClickOpen()
                                                             setState(prev => ({ ...prev, selectedReq: row }))
-                                                        }} style={{ cursor: 'pointer', color: '#ed9e21' }} />
+                                                        }} style={{ cursor: 'pointer', color: '#ed9e21',marginRight:'10'}} />
+                                                        {row.status === 'Approved'?
+                                                             <ThumbsUpDownIcon onClick={() => {
+                                                           
+                                                                onSubmitClaim('Released',row.form_id)
+                                                             }} style={{ cursor: 'pointer', color: '#ed9e21',marginRight:'10'}}/>
+                                                        :undefined
+
+                                                        }
+                                                   
+                                                        
                                                     </TableCell>
                                                     {columns.map((column) => {
                                                         let value = row[column.id];
@@ -425,16 +500,22 @@ export default function LoginPg() {
                                                         );
                                                     })}
                                                     <TableCell>
-                                                        {/* {JSON.parse(row.appliedFor).map((val, index2) => {
+                                                        {row.appliedFor !== "" && JSON.parse(row.appliedFor).map((val, index2) => {
                                                             return <div style={{ display: 'flex', alignItems: 'center', }}>
                                                                 <div style={{ width: 10, height: 10, borderRadius: 5, background: '#f1c40f', marginRight: 5 }} />
                                                                 <Typography key={index2}>{val}</Typography>
                                                             </div>
                                                         })
-                                                        } */}
+                                                        }
                                                     </TableCell>
                                                     <TableCell>
                                                         <Typography>{row.status}</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography>{moment(row.req_date_added).format('YYYY-MM-DD')}</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography>{ row.req_date_approved !== null? moment(row.req_date_approved).format('YYYY-MM-DD'):undefined}</Typography>
                                                     </TableCell>
                                                 </TableRow>
                                             );
