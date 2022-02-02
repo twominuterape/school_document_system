@@ -207,7 +207,7 @@ export default function LoginPg() {
             if (result.isConfirmed) {
 
                 loading_page()
-                getData('addingDocs/approveRequest', { form_id: state.selectedReq.form_id, status: status }).then((res) => {
+                getData('addingDocs/approveRequest', { form_id: state.selectedReq.form_id,email:state.selectedReq.email,status: status }).then((res) => {
                     Swal.close()
                     if (res.status == "success") {
                         Swal.fire({
