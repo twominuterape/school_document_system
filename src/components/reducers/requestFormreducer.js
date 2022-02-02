@@ -1,4 +1,6 @@
 const INITIAL_STATE = {
+    username:"",
+    password:"",
     appliedFor:[],
     tor_type:"",
     cert_type:"",
@@ -23,6 +25,7 @@ const INITIAL_STATE = {
         admission:"Junior High School Report Card (JHS Form 138)",
         contact:"",
         email:"",
+        claimtype:""
     },
     certifiedCopy:[],
     receiptCopy:[],
@@ -38,6 +41,16 @@ const INITIAL_STATE = {
 
 const reqDocsReducer = (state = INITIAL_STATE,action)=>{
     switch(action.type){ 
+        case 'passusername' :
+            return{
+                ...state,
+                username:action.applyusername,
+            }   
+        case 'passpassword' :
+            return{
+                ...state,
+                password:action.applypassword,
+            }   
         case 'passApply' :
             return{
                 ...state,

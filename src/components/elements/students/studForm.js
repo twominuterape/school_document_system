@@ -142,7 +142,7 @@ export default function StudentView({warningadmiss}) {
 
     const [departmenttype, setdepartmenttype] = React.useState([
         {type:'CAS'},
-        {type:'CITS'},
+        {type:'CITCS'},
         {type:'COE'},
         {type:'CTE'},
         {type:'CTHM'},
