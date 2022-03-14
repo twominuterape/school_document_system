@@ -122,6 +122,9 @@ export default function LoginPg() {
 
     const studentsRecord = useSelector(state => state.studData.studentRecords)
 
+    const breakdown_ = useSelector(state => state.reqDocsReducer.breakdown)
+    const totalpayment_ = useSelector(state => state.reqDocsReducer.total)
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -178,6 +181,8 @@ export default function LoginPg() {
                 tor_type:tor_selectedType,
                 cert_type:certificate_type,
                 claimtype:student_Input.claimtype,
+                total:totalpayment_,
+                breakdown:JSON.stringify(breakdown_),
                 status:'Pending'
             }
             for (let index = 0; index < CertifiedFiles.length; index++) {
@@ -240,6 +245,9 @@ export default function LoginPg() {
                         reset_studform:studFormnew,
                         reset_copy:[],
                         reset_receipt:[],
+                        reset_list:[],
+                        reset_total:[],
+
                     })
                     setFormCount(0)
                 }else{
