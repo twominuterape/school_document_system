@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
     studentRecords:"",
+    histories:[]
 }
 
 const studData = (state = INITIAL_STATE,action)=>{
@@ -9,7 +10,11 @@ const studData = (state = INITIAL_STATE,action)=>{
                 ...state,
                 studentRecords:action.passStudents,
             }  
-         
+        case 'student_records_':
+            return {
+                ...state,
+                ...action.data
+            }
         default:
             return state;         
     }

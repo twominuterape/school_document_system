@@ -2,6 +2,8 @@ const INITIAL_STATE = {
     username:"",
     password:"",
     appliedFor:[],
+    breakdown:[],
+    total:"",
     tor_type:"",
     cert_type:"",
     studentDetails:{
@@ -85,6 +87,12 @@ const reqDocsReducer = (state = INITIAL_STATE,action)=>{
                 ...state,
                 receiptCopy:action.receiptImage,
             }  
+        case 'passBreakdown' :
+            return{
+                ...state,
+                breakdown:action.breakdown_,
+                total:action.totalPayment,
+            }  
         case 'resetVAlue' :
             return{
                 ...state,
@@ -94,6 +102,8 @@ const reqDocsReducer = (state = INITIAL_STATE,action)=>{
                 studentDetails:action.reset_studform,
                 certifiedCopy:action.reset_copy,
                 receiptCopy:action.reset_receipt,
+                breakdown:action.reset_list,
+                total:action.reset_total,
             }  
          
         default:

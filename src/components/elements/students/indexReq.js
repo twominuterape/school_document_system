@@ -56,6 +56,14 @@ import Swal from 'sweetalert2'
 import { loading_page } from '../loading'
 import StudentOTP from './studentOTP'
 import WestmeadLogo from '../../assets/westm.jpeg'
+import HeadBread from './headbread'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -97,6 +105,7 @@ export default function LoginPg() {
     const [open, setOpen] = React.useState(false);
     const [warning, setwarning] = React.useState(false);
     const [displayOTP, setdisplayOTP] = React.useState(true);
+    const [displayHistory, setdisplayHistory] = React.useState(false);
     const [warningadmiss, setwarningadmiss] = React.useState(false);
 
     const [otpview, setotpview] = React.useState("");
@@ -105,6 +114,11 @@ export default function LoginPg() {
 
     const [generatedOTP, setgeneratedOTP] = React.useState(false);
     const [FormCount, setFormCount] = React.useState(0);
+
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
     const Dispatch = useDispatch();
@@ -121,6 +135,10 @@ export default function LoginPg() {
     const password_ = useSelector(state => state.reqDocsReducer.password)
 
     const studentsRecord = useSelector(state => state.studData.studentRecords)
+    const studentHistory = useSelector(state => state.studData.histories)
+
+    const breakdown_ = useSelector(state => state.reqDocsReducer.breakdown)
+    const totalpayment_ = useSelector(state => state.reqDocsReducer.total)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -130,8 +148,11 @@ export default function LoginPg() {
         setOpen(false);
     };
 
-    const handleCloseOTP = () => {
-        setgeneratedOTP(false);
+    const handleHistoryClose = () => {
+        setdisplayHistory(false);
+    };
+    const handleHistory = () => {
+        setdisplayHistory(true);
     };
 
     const handleNext = (e) => {
@@ -178,6 +199,8 @@ export default function LoginPg() {
                 tor_type:tor_selectedType,
                 cert_type:certificate_type,
                 claimtype:student_Input.claimtype,
+                total:totalpayment_,
+                breakdown:JSON.stringify(breakdown_),
                 status:'Pending'
             }
             for (let index = 0; index < CertifiedFiles.length; index++) {
@@ -240,6 +263,9 @@ export default function LoginPg() {
                         reset_studform:studFormnew,
                         reset_copy:[],
                         reset_receipt:[],
+                        reset_list:[],
+                        reset_total:[],
+
                     })
                     setFormCount(0)
                 }else{
@@ -268,7 +294,6 @@ export default function LoginPg() {
         if(filtered_pin.length > 0){
             setgeneratedOTP(true)
             setotpview("addOTP")
-           
         }else{
             Swal.fire({
                 position: 'center',
@@ -277,7 +302,6 @@ export default function LoginPg() {
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                console.log('fail')
                 setgeneratedOTP(true);})
         }
     }
@@ -295,6 +319,16 @@ export default function LoginPg() {
         }
         getData('Application_form/sendmailingaddress',usercredentials).then((res) => {
             setcreatedOTP(otpGenerated)
+            let reunmute = ""
+            console.log(res)
+            reunmute = JSON.stringify(res.account_history)
+            Dispatch({
+                type:'student_records_',
+                data:{
+                    histories:JSON.parse(reunmute)
+                }
+            })
+           
         })
     }
 
@@ -308,11 +342,13 @@ export default function LoginPg() {
         }else{
             if(createdOTP === insertedTOP){
                 setgeneratedOTP(false)
+                if(studentHistory.length > 0){
+                    setOpen(true)
+                }
             }else{
                 alert('Invalid inserted OTP')
             }
         }
-        
     }
 
     const getStudents=()=>{
@@ -327,7 +363,14 @@ export default function LoginPg() {
         })
     }
 
-
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+    
+    const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    };
 
     useEffect(()=>{
         if(studentsRecord === ""){
@@ -338,24 +381,17 @@ export default function LoginPg() {
     return (
         <React.Fragment>
             <Container>
-                <Breadcrumbs aria-label="breadcrumb" gutterBottom>
-                    <Link color="inherit" href="/">Document Portal</Link>
-                    <Typography color="textPrimary">Index</Typography>
-                </Breadcrumbs>
+                <HeadBread handleHistory={handleHistory}/>
                 <Grid  spacing={1} >
                     <Grid  item xs={12} md={12}>
                         <StaticDialog/>
                     </Grid>
                 </Grid>
-                {/* <hr style={{borderTop:'5px dashed #f7be68',marginTop:10,marginBottom:10}}/> */}
                 <Divider style={{backgroundColor:'#f7be68',marginTop:10,marginBottom:20,height:5}}/>
-                {/* <Grid  spacing={1} style={{marginBottom:15}}>
-                    <Grid  item xs={12} md={12}>
-                            <img src={Wisimage} style={{width:'100%',height:140}} />
-                    </Grid>
-                </Grid> */}
+         
                 <Issuance handleClickOpen={handleClickOpen}/>
             </Container>
+
             <Dialog
                 fullScreen={fullScreen}
                 open={open}
@@ -413,7 +449,7 @@ export default function LoginPg() {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                   
+                    
                 </DialogActions>
             </Dialog>
 
@@ -475,6 +511,82 @@ export default function LoginPg() {
                 </DialogContent>
                 <DialogActions/>
             </Dialog>
+        
+            <Dialog
+                fullScreen={fullScreen}
+                open={displayHistory}
+                onClose={handleHistoryClose}
+                aria-labelledby="responsive-dialog-title">
+                <DialogTitle id="responsive-dialog-title">{"Document request history"}</DialogTitle>
+                <DialogContent>
+                    <Divider style={{backgroundColor:'#f7be68',marginBottom:20,height:5}}/>
+                    {studentHistory.length > 0 &&
+                        <Paper variant="outlined">
+                        <TableContainer className={classes.container}>
+                            <Table stickyHeader style={{ whiteSpace: "nowrap" }}  >
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Student No.</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Name</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Department</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Degree</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Applied for</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Tor type</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Certificate type</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Claim type</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Status</TableCell>
+                                    <TableCell style={{backgroundColor:'#b33939',color:'#fff'}} align="left">Date request</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {studentHistory.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                                    let fullname = row.fname +' '+ row.mname +' '+row.fname
+                                    let colorStatus = "#84817a"
+                                    if(row.status === "Approved"){
+                                        colorStatus = "#218c74"
+                                    }else if(row.status === "Released"){
+                                        colorStatus = "#227093"
+                                    }else if(row.status === "Denied"){
+                                        colorStatus = "#b33939"
+                                    }
+                                    return<TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                        <TableCell align="left">{row.studnum}</TableCell>
+                                        <TableCell align="left">{fullname}</TableCell>
+                                        <TableCell align="left">{row.department}</TableCell>
+                                        <TableCell align="left">{row.degree}</TableCell>
+                                        <TableCell align="left">
+                                            {JSON.parse(row.appliedFor).map((row2,index2)=>{
+                                            return<p key={index2}>{row2}</p>
+                                            })}
+                                        </TableCell>
+                                        <TableCell align="left">{row.tor_type === "Not Applicable" ? 'N/A' : row.tor_type}</TableCell>
+                                        <TableCell align="left">{row.cert_type === "Not Applicable" ? 'N/A' : row.cert_type}</TableCell>
+                                        <TableCell align="left">{row.claimtype}</TableCell>
+                                        <TableCell align="left" style={{backgroundColor:colorStatus,color:'#fff'}}>{row.status}</TableCell>
+                                        <TableCell align="left">{row.req_date_added}</TableCell>
+                                    </TableRow>
+                                })}
+                            </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            count={studentHistory.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                        </Paper>
+                    }
+                   
+                </DialogContent>
+                <DialogActions>
+                    
+                </DialogActions>
+            </Dialog>               
+        
         </React.Fragment>
     );
 }

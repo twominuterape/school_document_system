@@ -88,12 +88,12 @@ export default function DocsPg({warning}) {
     const [refreshs, setrefreshs] = React.useState(false);
     const [openCertified, setopenCertified] = React.useState(false);
     const [docstype, setdocstype] = React.useState([
-        {type:'Diploma'},
-        {type:'Transcript of Records (TOR)'},
-        {type:'Certification'},
-        {type:'Transfer Credentials'},
-        {type:'CAV Credentials'},
-        {type:'Certified True Copy of Document'},
+        {type:'Diploma',price:'45'},
+        {type:'Transcript of Records (TOR)',price:'195'},
+        {type:'Certification',price:'145'},
+        {type:'Transfer Credentials',price:'485'},
+        {type:'CAV Credentials',price:'250'},
+        {type:'Certified True Copy of Document',price:'30'},
     ]);
 
     const [torType, settorType] = React.useState([
