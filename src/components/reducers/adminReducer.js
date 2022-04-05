@@ -1,5 +1,7 @@
 const INITIAL_STATE = {
-  masterList : []
+  masterList : [],
+  page:0,
+  loginData:[]
 }
 
 const reqDocsReducer = (state = INITIAL_STATE,action)=>{

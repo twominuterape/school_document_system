@@ -198,7 +198,9 @@ export default function StickyHeadTable() {
             data.append('file' + index, element)
 
         }
+       let new_category_id =  state.fileNameList.filter((val)=>(val.category_name === state.selected_file_name))
         data.append('file_name', state.selected_file_name)
+        data.append('file_name_category_id',new_category_id[0].category_id)
         data.append('category_id', category_id)
         data.append('student_id', user_id)
         data.append('user_id', 2)

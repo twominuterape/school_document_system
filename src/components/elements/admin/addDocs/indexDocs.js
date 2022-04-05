@@ -97,21 +97,7 @@ export default function LoginPg() {
     };
     const classes = useStyles();
     const History = useHistory()
-    React.useEffect(()=>{
-        loading_page()
-        axios.post('https://api.innovattosoft.com/users/students').then((res)=>{
-            Swal.close()
-            setState(prev=>({...prev,student_list:res.data}))
-            dispatch({
-                type:'onChangeAdminRedicer',
-                data:{masterList:res.data}
-            })
-        })
 
-        // getData('addingDocs/studentList').then((res)=>{
-        //         setState(prev=>({...prev,student_list:res.result.data}))
-        // })
-    },[])
     return (
         <React.Fragment>
             <>
@@ -176,7 +162,7 @@ export default function LoginPg() {
                         </Card>
                     </Grid> */}
                     <Grid item xs={12} md={12}>
-                        <StudentList state={state}/>
+                        <StudentList state={state} />
                     </Grid>
                 </Grid>
               

@@ -10,6 +10,8 @@ import FileStorageList from '../elements/admin/addDocs/fileListTable'
 // import Index from '../landingpg'
 import reqDocuments from '../elements/students/indexReq'
 import RequestIndex from '../elements/admin/requests/indexRequests'
+import TransactionIndex from '../elements/admin/transactions/indexRequests'
+
 export const routes = [
     // {
     //     path: '/home',
@@ -42,7 +44,12 @@ export const routes = [
         component: RequestIndex,
         page_name: 'Requests'
     },
-   
+    {
+        path: '/transactions',
+        exact: false,
+        component: TransactionIndex,
+        page_name: 'Transactions'
+    },
 ]
 
 export const routes_student = [

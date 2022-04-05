@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import Navigation from '../navigation/navigation'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {routes} from './routes'
+import { routes } from './routes'
 import { useSelector, useDispatch } from 'react-redux'
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -31,6 +31,13 @@ import MailIcon from '@material-ui/icons/Mail';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { loading_page } from '../../components/elements/loading'
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import RestoreIcon from '@material-ui/icons/Restore';
+import axios from "axios"
+import Swal from 'sweetalert2'
+
 const drawerWidth = 240;
 
 let width = window.innerWidth;
@@ -70,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         width: drawerWidth,
         backgroundColor: '#b64444',
-     
+
         // backgroundImage: `linear-gradient(to right,#636e72,#5b6366)`,
 
     },
@@ -103,7 +110,9 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPg() {
     const classes = useStyles();
     const theme = useTheme();
+  const adminReducer = useSelector(state => state.adminReducer)
 
+    const dispatch = useDispatch();
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -111,16 +120,31 @@ export default function LoginPg() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-    const [open, setOpen] = React.useState(width < 650 ?false:true);
+    const [open, setOpen] = React.useState(width < 650 ? false : true);
     const logout = () => {
         localStorage.clear();
         // window.location.replace(websitelink);
         window.location.replace("http://admin.docsystem.online")
         setTimeout(() => {
-          window.location.reload();
+            window.location.reload();
         }, 500);
-      };
-    console.log('hehehe')
+    };
+    React.useEffect(() => {
+        loading_page()
+        axios.post('https://api.innovattosoft.com/users/students').then((res) => {
+            Swal.close()
+            // setState(prev => ({ ...prev, student_list: res.data }))
+            dispatch({
+                type: 'onChangeAdminRedicer',
+                data: { masterList: res.data }
+            })
+        })
+
+        // getData('addingDocs/studentList').then((res)=>{
+        //         setState(prev=>({...prev,student_list:res.result.data}))
+        // })
+    }, [])
+    console.log(adminReducer)
     return <div className="App" >
         <Router>
             <div className={classes.root}>
@@ -168,27 +192,46 @@ export default function LoginPg() {
                             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </div>
-                    <div style={{ height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                    <div style={{paddingTop:5,paddingBottom:5, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
                         <AccountCircleIcon style={{ width: 80, height: 80, color: '#b23232' }} />
+                        <div style={{display:'flex',flexDirection:'column'}}>
+                            
+                            <Typography variant='p' style={{color:'#fff'}}>Welcome</Typography>
+                            {adminReducer.loginData.map((val,index)=>{
+                            return <Typography key={index} variant='p' style={{color:'#fff'}}>{val.user_fname+' '+val.user_lname}</Typography>
+
+                            })
+
+                            }
+
+                        </div>
 
                     </div>
                     <Divider />
                     <List>
-                        <ListItem component={NewLink} to="/" button onClick={()=>{
-                            if(width<650){
+                        <ListItem component={NewLink} to="/" button onClick={() => {
+                            if (width < 650) {
                                 handleDrawerClose()
                             }
                         }}>
-                            <ListItemIcon > <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
-                            <ListItemText primary={'Documents'} style={{ color: '#fff' }} />
+                            <ListItemIcon > <MenuBookIcon style={{ color: '#fff' }} /></ListItemIcon>
+                            <ListItemText primary={'Records Management'} style={{ color: '#fff' }} />
                         </ListItem>
-                        <ListItem  component={NewLink} to="/requests/"  button onClick={()=>{
-                             if(width<650){
+                        <ListItem component={NewLink} to="/requests/" button onClick={() => {
+                            if (width < 650) {
                                 handleDrawerClose()
                             }
                         }}>
-                            <ListItemIcon> <InboxIcon style={{ color: '#fff' }} /></ListItemIcon>
-                            <ListItemText primary={'Requests'} style={{ color: '#fff' }} />
+                            <ListItemIcon> <ListAltIcon style={{ color: '#fff' }} /></ListItemIcon>
+                            <ListItemText primary={'Document Request '} style={{ color: '#fff' }} />
+                        </ListItem>
+                        <ListItem component={NewLink} to="/transactions/" button onClick={() => {
+                            if (width < 650) {
+                                handleDrawerClose()
+                            }
+                        }}>
+                            <ListItemIcon> <RestoreIcon style={{ color: '#fff' }} /></ListItemIcon>
+                            <ListItemText primary={'Transactions'} style={{ color: '#fff' }} />
                         </ListItem>
                         {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                             <ListItem button key={text}>
@@ -198,8 +241,8 @@ export default function LoginPg() {
                         ))} */}
                     </List>
                     <List style={{ marginTop: `auto` }} >
-                    <Divider />
-                        <ListItem onClick = {()=>{logout()}}button style={{backgroundColor:'#b23232'}}>
+                        <Divider />
+                        <ListItem onClick={() => { logout() }} button style={{ backgroundColor: '#b23232' }}>
                             <ListItemText style={{ color: '#fff' }}>Logout</ListItemText>
                             <ExitToAppIcon style={{ color: '#fff' }} />
                         </ListItem>
