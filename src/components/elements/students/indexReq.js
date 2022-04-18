@@ -55,6 +55,7 @@ import axios from "axios"
 import Swal from 'sweetalert2'
 import { loading_page } from '../loading'
 import StudentOTP from './studentOTP'
+import AccountRecover from './recover'
 import WestmeadLogo from '../../assets/westm.jpeg'
 import HeadBread from './headbread'
 import Table from '@material-ui/core/Table';
@@ -104,7 +105,7 @@ export default function LoginPg() {
     const History = useHistory()
     const [open, setOpen] = React.useState(false);
     const [warning, setwarning] = React.useState(false);
-    const [displayOTP, setdisplayOTP] = React.useState(true);
+    const [displayConfirmation, setdisplayConfirmation] = React.useState(false);
     const [displayHistory, setdisplayHistory] = React.useState(false);
     const [warningadmiss, setwarningadmiss] = React.useState(false);
 
@@ -140,6 +141,8 @@ export default function LoginPg() {
     const breakdown_ = useSelector(state => state.reqDocsReducer.breakdown)
     const totalpayment_ = useSelector(state => state.reqDocsReducer.total)
 
+    const userData_recovery = useSelector(state => state.studData.studentRecover)
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -147,6 +150,7 @@ export default function LoginPg() {
     const handleClose = () => {
         setOpen(false);
     };
+   
 
     const handleHistoryClose = () => {
         setdisplayHistory(false);
@@ -372,6 +376,42 @@ export default function LoginPg() {
     setPage(0);
     };
 
+    const handleConfirmation=(e)=>{
+        e.preventDefault()
+        setdisplayConfirmation(true)
+    }
+
+    const RecoverySubmit=()=>{
+        loading_page()
+        getData('Application_form/postRecoveryAccount',userData_recovery).then((res) => {
+            Swal.close()
+            if(res.status === "success"){
+                alert('Account recovery successfuly posted.')
+                Dispatch({
+                    type:'student_records_',
+                    data:{
+                        studentRecover:{
+                            ...userData_recovery,
+                            fname:"",
+                            mname:"",
+                            lname:"",
+                            birthdate:"",
+                            gender:"",
+                            department:"",
+                            yearGraduated:"",
+                            email_rec:""
+                        }, 
+                    }
+                })
+                setdisplayConfirmation(false)
+           }else{
+               alert('Failed to post your application. Please try again')
+           }
+           setotpview("")
+           setgeneratedOTP(true)
+        })
+    }
+
     useEffect(()=>{
         if(studentsRecord === ""){
             getStudents()
@@ -454,60 +494,89 @@ export default function LoginPg() {
             </Dialog>
 
             <Dialog
+                fullScreen={fullScreen}
                 open={generatedOTP}
                 onClose={handleClose}
-                maxWidth="xs"
                 aria-labelledby="responsive-dialog-title">
-                <DialogTitle id="responsive-dialog-title"></DialogTitle>
-                <DialogContent>
-                    <div style={{height:'90%',display:'flex',alignItems:'center',justifyContent:'center',width:'100%',marginBottom:15}}>
-                        <div>
-                            <center>
-                                <img src={WestmeadLogo} style={{width:180,height:200}} />
-                                <Typography variant="h4" style={{fontWeight:'bold',color:'#4b4b4b'}}> LOGIN PORTAL</Typography>
-                                <Divider style={{marginBottom:5,marginTop:5,width:'90%'}}/>
-                            </center><br/>
-                            {otpview === ""
-                                ? <form onSubmit={handleRequet}>
-                                        <StudentOTP/>
-                                        <center>
-                                            <Button type="submt" variant="contained" color="primary" style={{width:'90%',marginTop:20}} size="large">
-                                                Next
-                                            </Button>
-                                        </center>
-                                    </form>
-                                :<>
-                                    <Grid container spacing={1} >
-                                        <Grid item xs={12} md={12}><TextField style={{ visibility: 'hidden' }} size="large" disabled /></Grid>
-                                        <Grid item xs={12} md={12} >
-                                            <center>
-                                                <OutlinedInput
-                                                    id="outlined-adornment-weight"
-                                                    value={insertedTOP}
-                                                    size="large"
-                                                    style={{ width: '90%' }}
-                                                    onChange={handleChange()}
-                                                    endAdornment={<InputAdornment onClick={() => sentOTP()} style={{ cursor: 'pointer' }} position="end">Send code</InputAdornment>}
-                                                    aria-describedby="outlined-weight-helper-text"
-                                                    inputProps={{
-                                                        'aria-label': 'weight',
-                                                    }}
-                                                    labelWidth={0}
-                                                />
-                                            </center>
-                                        </Grid>
-                                    </Grid>
-                                    <center>
-                                        <Button onClick={() => submitCode()} type="submt" variant="contained" color="primary" style={{ width: '90%', marginTop: 20 }} size="large">
-                                            Submit
-                                        </Button>
-                                    </center>
-                                </>
-                               
-                            }
-                           
-                        </div>
+                <DialogTitle id="responsive-dialog-title">
+                    <div style={{display:'flex'}}>
+                        <img src={WestmeadLogo} style={{width:45,height:50}} />
+                        <Typography variant="h5" style={{fontWeight:'bold',color:'#4b4b4b',marginLeft:10,marginTop:5}}>Westmead International School</Typography>
                     </div>
+                </DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={1} style={{marginTop:'5%'}}>
+                        <Grid  item xs={12} md={otpview === "recover" ? 2 : 4}></Grid>
+                        <Grid  item xs={12} md={otpview === "recover" ? 8 : 4}>
+                            <center>
+                                <div style={{height:'90%',width:'85%',justifyContent:'center',marginBottom:15,alignSelf:'center'}}>
+                                    {otpview !== "recover"
+                                        ?<Typography variant="h4" style={{fontWeight:'bold',color:'#b33939',textAlign:'left'}}>WIS Account Login</Typography>
+                                        :<Typography variant="h4" style={{fontWeight:'bold',color:'#b33939',textAlign:'left'}}>Account Recovery</Typography>
+                                    }
+                                    <Divider style={{marginBottom:15,marginTop:15,width:'100%'}}/>
+                                    {otpview === ""
+                                            ?<form onSubmit={handleRequet}>
+                                                    <StudentOTP/>
+                                                    <Button type="submt" variant="contained" color="primary" style={{width:'100%',marginTop:20,height:50}} size="large">
+                                                        Next
+                                                    </Button>
+                                                    <Typography style={{marginTop:10,color:'#636e72',textAlign:'left'}}>
+                                                        Can't remember your Student no.?
+                                                        <span style={{color:'#0984e3',marginLeft:5,cursor:'pointer'}} onClick={()=>setotpview('recover')}>
+                                                            Click here to recover your account.
+                                                        </span>
+                                                    </Typography>
+                                            </form>
+                                        :otpview === "recover" 
+                                            ?<>
+                                            <form onSubmit={handleConfirmation}>
+                                                <AccountRecover/>
+                                                <Button type="submt" variant="contained" color="primary" style={{width:'100%',marginTop:20,height:50}} size="large">
+                                                    Submit
+                                                </Button>
+                                                <Typography style={{marginTop:10,color:'#636e72',textAlign:'left'}}>
+                                                    Already have a Student no.?
+                                                    <span style={{color:'#0984e3',marginLeft:5,cursor:'pointer'}} onClick={()=>setotpview("")}>
+                                                        Click here to login your account.
+                                                    </span>
+                                                </Typography>
+                                            </form>
+                                            </>
+                                            :<>
+                                                <Grid container spacing={1} >
+                                                    <Grid item xs={12} md={12}><TextField style={{ visibility: 'hidden' }} size="large" disabled /></Grid>
+                                                    <Grid item xs={12} md={12} >
+                                                        <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Email Verification Code</Typography>
+                                                        <OutlinedInput
+                                                            id="outlined-adornment-weight"
+                                                            value={insertedTOP}
+                                                            size="large"
+                                                            style={{ width: '100%' }}
+                                                            onChange={handleChange()}
+                                                            endAdornment={<InputAdornment onClick={() => sentOTP()} style={{ cursor: 'pointer'}} position="end">
+                                                                <span style={{fontWeight:'bold',color:'#b33939'}}>Send code</span>
+                                                                </InputAdornment>}
+                                                            aria-describedby="outlined-weight-helper-text"
+                                                            inputProps={{
+                                                                'aria-label': 'weight',
+                                                            }}
+                                                            labelWidth={0}
+                                                        />
+                                                        <Typography style={{color:'#636e72',fontSize:15,textAlign:'left',marginTop:5}}>Enter the 6-digit code sent to {password_}</Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Button onClick={() => submitCode()} type="submt" variant="contained" color="primary" style={{ width: '100%', marginTop: 20,height:50 }} size="large">
+                                                    Submit
+                                                </Button>
+                                            </>
+                                    }
+                                </div>
+                            </center>
+                        </Grid>
+                        <Grid  item xs={12} md={otpview === "recover" ? 2 : 4}></Grid>
+                    </Grid>
+                   
                 </DialogContent>
                 <DialogActions/>
             </Dialog>
@@ -586,7 +655,32 @@ export default function LoginPg() {
                     
                 </DialogActions>
             </Dialog>               
-        
+            
+            {/* recovery confirmation */}
+            <Dialog
+                open={displayConfirmation}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description" >
+                <DialogTitle id="alert-dialog-title">{"Confirmation"}</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Note: Your application for this request might take days to be approve. Account credentials will be sent to your email.
+                    <Typography style={{textAlign:'left',marginTop:10}}> Please click Submit to continue.</Typography>
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=>setdisplayConfirmation(false)} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={()=>{
+                        setdisplayConfirmation(false)
+                        setgeneratedOTP(false)
+                        RecoverySubmit()
+                    }} color="primary" autoFocus>
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </React.Fragment>
     );
 }
