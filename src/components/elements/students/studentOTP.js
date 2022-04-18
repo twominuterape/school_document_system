@@ -120,28 +120,24 @@ export default function StudentOTP({warning}) {
     return (
         <Grid container spacing={1} >
             <Grid item xs={12} md={12} >
-                <center>
-                    <TextField
-                        size="large"
-                        style={{ width: '90%' }}
-                        id="outlined-helperText"
-                        label="Student No."
-                        onChange={onChangeusername}
-                        defaultValue={username_}
-                        variant="outlined" />
-                </center>
+                <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Student No.</Typography>
+                <TextField
+                    size="large"
+                    style={{ width: '100%' }}
+                    id="outlined-helperText"
+                    onChange={onChangeusername}
+                    defaultValue={username_}
+                    variant="outlined" />
             </Grid>
             <Grid item xs={12} md={12}>
-                <center>
-                    <TextField
-                        size="large"
-                        style={{ width: '90%', }}
-                        id="outlined-helperText"
-                        label="Email address"
-                        onChange={onChangepassword}
-                        defaultValue={password_}
-                        variant="outlined" />
-                </center>
+                <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Email address</Typography>
+                <TextField
+                    size="large"
+                    style={{ width: '100%', }}
+                    id="outlined-helperText"
+                    onChange={onChangepassword}
+                    defaultValue={password_}
+                    variant="outlined" />
             </Grid>
         </Grid>
     );

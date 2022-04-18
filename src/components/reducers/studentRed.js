@@ -1,6 +1,16 @@
 const INITIAL_STATE = {
     studentRecords:"",
-    histories:[]
+    histories:[],
+    studentRecover:{
+        fname:"",
+        mname:"",
+        lname:"",
+        birthdate:"",
+        gender:"",
+        department:"",
+        yearGraduated:"",
+        email_rec:""
+    }
 }
 
 const studData = (state = INITIAL_STATE,action)=>{
