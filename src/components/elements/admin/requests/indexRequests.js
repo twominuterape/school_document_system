@@ -300,6 +300,7 @@ export default function LoginPg() {
         e.preventDefault();
         onSubmitApproved('Deny')
     }
+    console.log(adminReducer)
     return (
         <React.Fragment>
             <>
@@ -416,7 +417,7 @@ export default function LoginPg() {
                                                 </div>
                                                 <Typography style={{ fontSize: 30, fontWeight: 'bold' }}>{state.requestList.reduce((count, val) => {
 
-                                                    if (val.status === 'Released' && adminReducer.loginData[0].user_id === val.user_id) {
+                                                    if (val.status === 'Released' && adminReducer.loginData[0]?.user_id === val.user_id) {
                                                         count++
                                                     }
                                                     return count
@@ -432,7 +433,7 @@ export default function LoginPg() {
                                                     <Typography variant='p' className={classes.cardFont}>My Approved</Typography>
                                                 </div>
                                                 <Typography style={{ fontSize: 30, fontWeight: 'bold' }}>{state.requestList.reduce((count, val) => {
-                                                    if (val.status === 'Approved' && adminReducer.loginData[0].user_id === val.user_id) {
+                                                    if (val.status === 'Approved' && adminReducer.loginData[0]?.user_id === val.user_id) {
                                                         count++
                                                     }
                                                     return count

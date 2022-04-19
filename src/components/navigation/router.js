@@ -37,6 +37,7 @@ import ListAltIcon from '@material-ui/icons/ListAlt';
 import RestoreIcon from '@material-ui/icons/Restore';
 import axios from "axios"
 import Swal from 'sweetalert2'
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 
 const drawerWidth = 240;
 
@@ -90,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-end',
     },
     content: {
-        width: '100%',
+        width: '80%',
         flexGrow: 1,
         padding: theme.spacing(3),
         transition: theme.transitions.create('margin', {
@@ -110,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPg() {
     const classes = useStyles();
     const theme = useTheme();
-  const adminReducer = useSelector(state => state.adminReducer)
+    const adminReducer = useSelector(state => state.adminReducer)
 
     const dispatch = useDispatch();
     const handleDrawerOpen = () => {
@@ -192,13 +193,13 @@ export default function LoginPg() {
                             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </div>
-                    <div style={{paddingTop:5,paddingBottom:5, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                    <div style={{ paddingTop: 5, paddingBottom: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
                         <AccountCircleIcon style={{ width: 80, height: 80, color: '#b23232' }} />
-                        <div style={{display:'flex',flexDirection:'column'}}>
-                            
-                            <Typography variant='p' style={{color:'#fff'}}>Welcome</Typography>
-                            {adminReducer.loginData.map((val,index)=>{
-                            return <Typography key={index} variant='p' style={{color:'#fff'}}>{val.user_fname+' '+val.user_lname}</Typography>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+                            <Typography variant='p' style={{ color: '#fff' }}>Welcome</Typography>
+                            {adminReducer.loginData.map((val, index) => {
+                                return <Typography key={index} variant='p' style={{ color: '#fff' }}>{val.user_fname + ' ' + val.user_lname}</Typography>
 
                             })
 
@@ -232,6 +233,14 @@ export default function LoginPg() {
                         }}>
                             <ListItemIcon> <RestoreIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Transactions'} style={{ color: '#fff' }} />
+                        </ListItem>
+                        <ListItem component={NewLink} to="/accountRecovery/" button onClick={() => {
+                            if (width < 650) {
+                                handleDrawerClose()
+                            }
+                        }}>
+                            <ListItemIcon> <PlaylistAddCheckIcon style={{ color: '#fff' }} /></ListItemIcon>
+                            <ListItemText primary={'Account Recovery Request'} style={{ color: '#fff' }} />
                         </ListItem>
                         {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                             <ListItem button key={text}>

@@ -11,6 +11,7 @@ import FileStorageList from '../elements/admin/addDocs/fileListTable'
 import reqDocuments from '../elements/students/indexReq'
 import RequestIndex from '../elements/admin/requests/indexRequests'
 import TransactionIndex from '../elements/admin/transactions/indexRequests'
+import AccountRecoveryRequest from '../elements/admin/recoveryRequest/indexRequests'
 
 export const routes = [
     // {
@@ -49,6 +50,12 @@ export const routes = [
         exact: false,
         component: TransactionIndex,
         page_name: 'Transactions'
+    },
+    {
+        path: '/accountRecovery',
+        exact: false,
+        component: AccountRecoveryRequest,
+        page_name: 'Account Recovery Request'
     },
 ]
 
