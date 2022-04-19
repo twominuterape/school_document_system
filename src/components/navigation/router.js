@@ -145,7 +145,6 @@ export default function LoginPg() {
         //         setState(prev=>({...prev,student_list:res.result.data}))
         // })
     }, [])
-    console.log(adminReducer)
     return <div className="App" >
         <Router>
             <div className={classes.root}>

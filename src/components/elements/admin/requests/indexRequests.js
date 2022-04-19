@@ -180,7 +180,6 @@ export default function LoginPg() {
     )
 
     const onSubmitFilter = () => {
-        console.log(state.statusFilter)
         let filter = []
         if (state.statusFilter === "All") {
             filter = state.requestList
@@ -300,7 +299,6 @@ export default function LoginPg() {
         e.preventDefault();
         onSubmitApproved('Deny')
     }
-    console.log(adminReducer)
     return (
         <React.Fragment>
             <>
