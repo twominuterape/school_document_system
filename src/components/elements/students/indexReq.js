@@ -324,7 +324,6 @@ export default function LoginPg() {
         getData('Application_form/sendmailingaddress',usercredentials).then((res) => {
             setcreatedOTP(otpGenerated)
             let reunmute = ""
-            console.log(res)
             reunmute = JSON.stringify(res.account_history)
             Dispatch({
                 type:'student_records_',
@@ -381,9 +380,68 @@ export default function LoginPg() {
         setdisplayConfirmation(true)
     }
 
+    const CheckExisting=()=>{
+        const filterName = JSON.parse(studentsRecord).filter(function(item){
+            return (String(item.firstName).toUpperCase() === String(userData_recovery.fname).toUpperCase() && String(item.lastName).toUpperCase() === String(userData_recovery.lname).toUpperCase());
+        })
+        if(filterName.length > 0){
+            const currentIndex = filterName.findIndex(x => String(x.forIdName).toUpperCase().includes(String(userData_recovery.department).toUpperCase()))
+            if(currentIndex > -1){
+                setdisplayConfirmation(false)
+                setgeneratedOTP(false)
+                AutomaticEmail(filterName[currentIndex].schoolId)
+            }else{
+                setdisplayConfirmation(false)
+                setgeneratedOTP(false)
+                RecoverySubmit()
+            }
+        }else{
+            setdisplayConfirmation(false)
+            setgeneratedOTP(false)
+            RecoverySubmit()
+        }
+
+       
+    }
+
     const RecoverySubmit=()=>{
         loading_page()
         getData('Application_form/postRecoveryAccount',userData_recovery).then((res) => {
+            Swal.close()
+            if(res.status === "success"){
+                alert('Account recovery successfuly posted.')
+                Dispatch({
+                    type:'student_records_',
+                    data:{
+                        studentRecover:{
+                            ...userData_recovery,
+                            fname:"",
+                            mname:"",
+                            lname:"",
+                            birthdate:"",
+                            gender:"",
+                            department:"",
+                            yearGraduated:"",
+                            email_rec:""
+                        }, 
+                    }
+                })
+                setdisplayConfirmation(false)
+           }else{
+               alert('Failed to post your application. Please try again')
+           }
+           setotpview("")
+           setgeneratedOTP(true)
+        })
+    }
+
+    const AutomaticEmail=(schoolId)=>{
+        loading_page()
+        let params = {
+            schoolId:schoolId,
+            userData_recovery:userData_recovery
+        }
+        getData('Application_form/postAutomaticEmail',params).then((res) => {
             Swal.close()
             if(res.status === "success"){
                 alert('Account recovery successfuly posted.')
@@ -673,9 +731,7 @@ export default function LoginPg() {
                         Cancel
                     </Button>
                     <Button onClick={()=>{
-                        setdisplayConfirmation(false)
-                        setgeneratedOTP(false)
-                        RecoverySubmit()
+                        CheckExisting()
                     }} color="primary" autoFocus>
                         Submit
                     </Button>
