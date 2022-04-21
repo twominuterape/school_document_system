@@ -213,7 +213,7 @@ export default function AccountRecover({warning}) {
                     onChange={onChangeRecover}
                     value={userData_recovery.department}
                     variant="outlined" 
-                    helperText="Please write your course in this format: BS Information Technology (BSIT)"/>
+                    helperText="Please write your course in this format: BS Information Technology"/>
             </Grid>
             <Grid item xs={12} md={12} >
                 <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Year Graduated</Typography>
