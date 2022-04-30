@@ -10,7 +10,9 @@ const INITIAL_STATE = {
         department:"",
         yearGraduated:"",
         email_rec:""
-    }
+    },
+    availableCourse:[],
+    availableDept:[]
 }
 
 const studData = (state = INITIAL_STATE,action)=>{

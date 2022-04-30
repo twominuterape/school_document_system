@@ -47,6 +47,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import DocsView from './docsForm'
 import StudentView from './studForm'
+import ReviewView from './reviewform'
 import ProofView from './proofPayment'
 import { useDispatch,useSelector } from 'react-redux'
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -108,7 +109,9 @@ export default function LoginPg() {
     const [displayConfirmation, setdisplayConfirmation] = React.useState(false);
     const [displayHistory, setdisplayHistory] = React.useState(false);
     const [warningadmiss, setwarningadmiss] = React.useState(false);
-
+    const [countdown,setcountdown] = React.useState(30)
+    const [resendIdentificator,setresendIdentificator] = React.useState(false)
+    const [displayLoad,setdisplayLoad] = React.useState(false)
     const [otpview, setotpview] = React.useState("");
     const [createdOTP, setcreatedOTP] = React.useState("");
     const [insertedTOP, setinsertedTOP] = React.useState("");
@@ -175,7 +178,7 @@ export default function LoginPg() {
             }else{
                 setwarningadmiss(true)
             }
-        }else if(FormCount === 2){
+        }else if(FormCount === 3){
             setOpen(false);
             let data = new FormData();
             let formSubmit={
@@ -311,6 +314,7 @@ export default function LoginPg() {
     }
 
     const sentOTP=()=>{
+        setcountdown(30)
         var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var otpGenerated = '';
         for ( var i = 0; i < 6; i++ ) {
@@ -322,7 +326,13 @@ export default function LoginPg() {
             otpGenerated:otpGenerated,
         }
         getData('Application_form/sendmailingaddress',usercredentials).then((res) => {
+            setdisplayLoad(false)
             setcreatedOTP(otpGenerated)
+            setresendIdentificator(true)
+            let interval = null;
+            interval = setInterval(() => {
+              setcountdown(seconds => seconds - 1);
+            }, 1000);
             let reunmute = ""
             reunmute = JSON.stringify(res.account_history)
             Dispatch({
@@ -331,7 +341,10 @@ export default function LoginPg() {
                     histories:JSON.parse(reunmute)
                 }
             })
-           
+            setTimeout(()=>{
+                clearInterval(interval)
+                setresendIdentificator(false)
+            },30000)
         })
     }
 
@@ -356,11 +369,21 @@ export default function LoginPg() {
 
     const getStudents=()=>{
         loading_page()
-        axios.post('https://api.innovattosoft.com/users/students').then((res)=>{
+        Promise.all([
+            axios.post('https://api.innovattosoft.com/users/students'),
+            axios.post('http://beta.gzonetechph.com/Application_form/fetchAvailableCourses')
+          ]).then((res)=>{
             Swal.close()
             Dispatch({
                 type:'passStudRecords',
-                passStudents:JSON.stringify(res.data),
+                passStudents:JSON.stringify(res[0].data),
+            })
+            Dispatch({
+                type:'student_records_',
+                data:{
+                    availableCourse:res[1].data.course,
+                    availableDept:res[1].data.dept,
+                }
             })
             setgeneratedOTP(true)
         })
@@ -471,6 +494,7 @@ export default function LoginPg() {
     }
 
     useEffect(()=>{
+        
         if(studentsRecord === ""){
             getStudents()
         }
@@ -506,6 +530,9 @@ export default function LoginPg() {
                             <StudentView warningadmiss={warningadmiss}/>
                         }
                         {FormCount === 2 &&
+                            <ReviewView warningadmiss={warningadmiss}/>
+                        }
+                        {FormCount === 3 &&
                             <ProofView />
                         }
                         <Grid container spacing={1} style={{marginTop:10}}>
@@ -513,17 +540,17 @@ export default function LoginPg() {
                             <Grid item xs={12} md={6} >
                                 <MobileStepper
                                 variant="progress"
-                                steps={3}
+                                steps={4}
                                 position="static"
                                 activeStep={FormCount}
                                 className={classes.root}
                                 nextButton={
-                                    FormCount === 2
+                                    FormCount === 3
                                         ?<Button size="small" type="submit" > 
                                             Submit
                                             {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                                         </Button>
-                                        :<Button size="small" type="submit"  disabled={FormCount === 2}> 
+                                        :<Button size="small" type="submit"  disabled={FormCount === 3}> 
                                             Next
                                             {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                                         </Button>
@@ -612,8 +639,21 @@ export default function LoginPg() {
                                                             size="large"
                                                             style={{ width: '100%' }}
                                                             onChange={handleChange()}
-                                                            endAdornment={<InputAdornment onClick={() => sentOTP()} style={{ cursor: 'pointer'}} position="end">
-                                                                <span style={{fontWeight:'bold',color:'#b33939'}}>Send code</span>
+                                                            endAdornment={<InputAdornment onClick={() =>{
+                                                                if(resendIdentificator === false){
+                                                                    setdisplayLoad(true)
+                                                                    sentOTP()
+                                                                }
+                                                            }} style={{ cursor: 'pointer'}} position="end">
+                                                                {displayLoad === true
+                                                                    ?<span style={{fontWeight:'bold',color:'#222f3e'}}>Loading...</span>
+                                                                    :<>
+                                                                        {resendIdentificator === false 
+                                                                            ?<span style={{fontWeight:'bold',color:'#b33939'}}>Send code</span>
+                                                                            :<span style={{fontWeight:'bold',color:'#576574'}}>Send code ({countdown})</span>
+                                                                        }
+                                                                    </>
+                                                                }
                                                                 </InputAdornment>}
                                                             aria-describedby="outlined-weight-helper-text"
                                                             inputProps={{
