@@ -160,6 +160,8 @@ export default function StudentView({warningadmiss}) {
     const fullScreen = useMediaQuery(theme.breakpoints.down('xl'));
     const [admissionVal, setadmissionVal] = React.useState('Junior High School Report Card (JHS Form 138)');
 
+    const availableCourses = useSelector(state => state.studData.availableCourse)
+    const availableDepartment = useSelector(state => state.studData.availableDept)
 
     const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
 
@@ -191,6 +193,15 @@ export default function StudentView({warningadmiss}) {
         })
     };
 
+    const handleCourses = (event) => {
+        Dispatch({
+            type:'passStudForm',
+            studentdetails:{
+                'degree': event.target.value
+            },
+        })
+    };
+
 
     const handleAdmission = (event) => {
         if(student_Input.admission === event.target.name){
@@ -211,7 +222,10 @@ export default function StudentView({warningadmiss}) {
       };
 
     useEffect(()=>{
-        console.log(docstype)
+        console.log({
+            availableDepartment:availableDepartment,
+            availableCourses:availableCourses
+        })
     },[])
     return (
         <Grid container spacing={1} >
@@ -339,7 +353,39 @@ export default function StudentView({warningadmiss}) {
                             />
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}}>
-                        <TextField
+                        <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }} size={"small"} required={true}>
+                            <InputLabel id="demo-simple-select-outlined-label">Department: </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-outlined-label"
+                                id="demo-simple-select-outlined"
+                                value={student_Input.department}
+                                onChange={handleDepartment}>
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {availableDepartment.map((value, index) => {
+                                    return <MenuItem value={value.dept_name} key={index}>{value.dept_name}</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} md={12} style={{marginTop:10}}>
+                        <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }} size={"small"} required={true}>
+                            <InputLabel id="demo-simple-select-outlined-label">Degree Program: </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-outlined-label"
+                                id="demo-simple-select-outlined"
+                                value={student_Input.degree}
+                                onChange={handleCourses}>
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {availableCourses.map((value, index) => {
+                                    return <MenuItem value={value.course_name} key={index}>{value.course_name}</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl>
+                        {/* <TextField
                             style={{width:'100%'}}
                             size={'small'}
                             id="outlined-helperText"
@@ -351,7 +397,7 @@ export default function StudentView({warningadmiss}) {
                             label="Degree Program: "
                             helperText="Please write your course in this format: BS Information Technology (BSIT)"
                             variant="outlined"
-                            />
+                            /> */}
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}}>
                         <TextField
@@ -367,24 +413,6 @@ export default function StudentView({warningadmiss}) {
                             helperText="For degree programs without specialization/major, please indicate N/A"
                             variant="outlined"
                             />
-                    </Grid>
-                    <Grid item xs={12} md={12} style={{marginTop:10}}>
-                        <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }} size={"small"} required={true}>
-                            <InputLabel id="demo-simple-select-outlined-label">Department: </InputLabel>
-                            <Select
-                                labelId="demo-simple-select-outlined-label"
-                                id="demo-simple-select-outlined"
-                                value={student_Input.department}
-                                onChange={handleDepartment}
-                                label="Graduate/Undergraduate? ">
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                {departmenttype.map((value, index) => {
-                                    return <MenuItem value={value.type} key={index}>{value.type}</MenuItem>
-                                })}
-                            </Select>
-                        </FormControl>
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}}>
                         <TextField
