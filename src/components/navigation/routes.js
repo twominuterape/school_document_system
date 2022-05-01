@@ -12,6 +12,10 @@ import reqDocuments from '../elements/students/indexReq'
 import RequestIndex from '../elements/admin/requests/indexRequests'
 import TransactionIndex from '../elements/admin/transactions/indexRequests'
 import AccountRecoveryRequest from '../elements/admin/recoveryRequest/indexRequests'
+import AddDepartments from '../elements/admin/addDepartment/indexDepartment'
+import Courses from '../elements/admin/courses/indexCourses'
+
+
 
 export const routes = [
     // {
@@ -56,6 +60,18 @@ export const routes = [
         exact: false,
         component: AccountRecoveryRequest,
         page_name: 'Account Recovery Request'
+    },
+    {
+        path: '/department',
+        exact: false,
+        component: AddDepartments,
+        page_name: 'Departments'
+    },
+    {
+        path: '/courses/:dept_name/:dept_id',
+        exact: false,
+        component: Courses,
+        page_name: 'Courses'
     },
 ]
 

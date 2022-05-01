@@ -38,6 +38,7 @@ import RestoreIcon from '@material-ui/icons/Restore';
 import axios from "axios"
 import Swal from 'sweetalert2'
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
 
 const drawerWidth = 240;
 
@@ -240,6 +241,14 @@ export default function LoginPg() {
                         }}>
                             <ListItemIcon> <PlaylistAddCheckIcon style={{ color: '#fff' }} /></ListItemIcon>
                             <ListItemText primary={'Account Recovery Request'} style={{ color: '#fff' }} />
+                        </ListItem>
+                        <ListItem component={NewLink} to="/department/" button onClick={() => {
+                            if (width < 650) {
+                                handleDrawerClose()
+                            }
+                        }}>
+                            <ListItemIcon> <AccountTreeIcon style={{ color: '#fff' }} /></ListItemIcon>
+                            <ListItemText primary={'Department'} style={{ color: '#fff' }} />
                         </ListItem>
                         {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                             <ListItem button key={text}>
