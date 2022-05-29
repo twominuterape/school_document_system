@@ -203,8 +203,7 @@ export default function FileStorage() {
         })
     }
 
-    const deleteFolder = (e,id) => {
-        e.stopPropagation();
+    const deleteFolder = (id) => {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -215,7 +214,6 @@ export default function FileStorage() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                loading_page()
                 getData('addingDocs/deleteCategory', { id: id }).then((res) => {
                     if (res.status) {
                         Swal.fire(
@@ -256,7 +254,7 @@ export default function FileStorage() {
                 let percent = Math.floor((loaded * 100) / total)
             }
         }
-       axios.post("http://localhost/test_api/addingDocs/uploadFile",data,config
+       axios.post("http://beta.gzonetechph.com/addingDocs/uploadFile",data,config
       ).then((res)=>{
        })
     }
@@ -306,9 +304,9 @@ export default function FileStorage() {
                                                 <div style={{ position: 'relative', width: 120, height: 120,cursor:'pointer' }} onClick={()=>{
                                                     getFiles(val.category_name,val.category_id)
                                                 }}>
-                                                    <IconButton onClick={(e) => {
+                                                    <IconButton onClick={() => {
                                                       
-                                                            deleteFolder(e,val.category_id)
+                                                            deleteFolder(val.category_id)
                                                       
                                                         }} style={{ display:val.with_data?'none':undefined ,position: 'absolute', top: 15, right: 3,cursor:'pointer' }} aria-label="delete" className={classes.margin} size="small">
                                                         <CloseIcon fontSize="inherit" />

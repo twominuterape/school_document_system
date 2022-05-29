@@ -226,7 +226,7 @@ export default function StickyHeadTable() {
                                                                 }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: 5 }} />
                                                                 {/* </NewLink> */}
                                                             </Tooltip>
-                                                            <Tooltip title="Edit">
+                                                            <Tooltip title="Delete">
                                                                 {/* <NewLink to={"file:///C:/xampp/htdocs/test_api/assets/docs_files/"+row.document_name} target="_blank"> */}
                                                                 <EditIcon  onClick={() => {setOpen(true);setState(prev=>({
                                                                     ...prev,selectedData:row,departmentName:row.dept_name,actionButton:'Edit'

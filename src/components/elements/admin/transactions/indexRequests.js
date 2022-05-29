@@ -621,14 +621,14 @@ export default function LoginPg() {
                                                             value = String(row.lname + ' ' + row.fname + ', ' + row.mname).toLocaleUpperCase()
                                                         }
                                                         return (
-                                                            <TableCell key={column.id} align={column.align}>
+                                                            <TableCell key={column.id} align={column.align} style={{whiteSpace: 'nowrap'}}>
                                                                 {column.format && typeof value === 'number' ? column.format(value) : value}
                                                             </TableCell>
                                                         );
                                                     })}
                                                     <TableCell>
                                                         {row.appliedFor !== "" && JSON.parse(row.appliedFor).map((val, index2) => {
-                                                            return <div style={{ display: 'flex', alignItems: 'center', }}>
+                                                            return <div style={{ display: 'flex', alignItems: 'center',whiteSpace: 'nowrap' }}>
                                                                 <div style={{ width: 10, height: 10, borderRadius: 5, background: '#f1c40f', marginRight: 5 }} />
                                                                 <Typography key={index2}>{val}</Typography>
                                                             </div>

@@ -69,7 +69,7 @@ const columns = [
     { id: 'rec_id', label: 'Request ID' },
     { id: 'lname', label: 'Last Name' },
     { id: 'fname', label: 'First Name' },
-    { id: 'mname', label: 'Middle Name' },
+    { id: 'lname', label: 'Middle Name' },
     { id: 'birthdate', label: 'Birthdate' },
     { id: 'department', label: 'Department' },
     { id: 'yearGraduated', label: 'Year Graduated' },
@@ -501,9 +501,9 @@ export default function LoginPg() {
                                                     </TableCell>
                                                     {columns.map((column) => {
                                                         let value = row[column.id];
-                                                        // if (column.id === 'lname') {
-                                                        //     value = String(row.lname + ' ' + row.fname + ', ' + row.mname).toLocaleUpperCase()
-                                                        // }
+                                                        if (column.id === 'lname') {
+                                                            value = String(row.lname + ' ' + row.fname + ', ' + row.mname).toLocaleUpperCase()
+                                                        }
                                                         return (
                                                             <TableCell style={{ whiteSpace: 'nowrap' }} key={column.id} align={column.align}>
                                                                 {column.format && typeof value === 'number' ? column.format(value) : value}

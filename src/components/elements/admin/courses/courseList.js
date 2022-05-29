@@ -224,7 +224,7 @@ export default function StickyHeadTable() {
                                                     <TableCell>
                                                         <div style={{ display: 'flex' }}>
                                                            
-                                                            <Tooltip title="View">
+                                                            <Tooltip title="Edit">
                                                                 {/* <NewLink to={"file:///C:/xampp/htdocs/test_api/assets/docs_files/"+row.document_name} target="_blank"> */}
                                                                 <EditIcon onClick={() => {
                                                                     setOpen(true); setState(prev => ({

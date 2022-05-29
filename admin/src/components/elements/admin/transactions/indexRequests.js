@@ -42,7 +42,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
-import Tooltip from '@material-ui/core/Tooltip';
 import TableRow from '@material-ui/core/TableRow';
 import { getData } from '../../../api/api';
 import CallMadeIcon from '@material-ui/icons/CallMade';
@@ -53,8 +52,12 @@ import { loading_page } from '../../loading'
 import CachedIcon from '@material-ui/icons/Cached';
 import Swal from 'sweetalert2';
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import ReactExport from "react-data-export";
 import { useSelector, useDispatch } from 'react-redux'
-import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -137,6 +140,7 @@ export default function LoginPg() {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
+
     const adminReducer = useSelector(state => state.adminReducer)
 
 
@@ -158,8 +162,8 @@ export default function LoginPg() {
         selectedReq: [],
         refresh: false,
         logsData: [],
-        deny_modal: false,
-        reason: ''
+        from: '',
+        to: ''
     })
 
     const handleChangeRowsPerPage = (event) => {
@@ -181,6 +185,7 @@ export default function LoginPg() {
     )
 
     const onSubmitFilter = () => {
+        console.log(state.statusFilter)
         let filter = []
         if (state.statusFilter === "All") {
             filter = state.requestList
@@ -198,13 +203,16 @@ export default function LoginPg() {
 
     React.useEffect(() => {
         loading_page()
-        getData('requests/getRequests').then((res) => {
+        let data = {
+            from: state.from,
+            to: state.to
+        }
+        getData('requests/getTransaction', data).then((res) => {
             Swal.close()
             let filter = []
             if (state.statusFilter === "All") {
                 filter = res.result.data
-            }
-            else if (state.statusFilter === "My Released") {
+            } else if (state.statusFilter === "My Released") {
                 filter = state.requestList.filter((val) => (val.status === 'Released' && val.user_id === adminReducer.loginData[0].user_id))
             } else if (state.statusFilter === "My Approved") {
                 filter = state.requestList.filter((val) => (val.status === 'Approved' && val.user_id === adminReducer.loginData[0].user_id))
@@ -224,7 +232,6 @@ export default function LoginPg() {
     }
     const onSubmitApproved = (status) => {
         setOpen(false)
-
         Swal.fire({
             title: 'Are you sure?',
             text: "You want to " + status + ' this request',
@@ -235,10 +242,9 @@ export default function LoginPg() {
             confirmButtonText: 'Yes'
         }).then((result) => {
             if (result.isConfirmed) {
-                setState(prev => ({ ...prev, deny_modal: false }))
                 let user_id = adminReducer.loginData[0].user_id
                 loading_page()
-                getData('addingDocs/approveRequest', { form_id: state.selectedReq.form_id, email: state.selectedReq.email, status: status, user_id: user_id, reason: state.reason }).then((res) => {
+                getData('addingDocs/approveRequest', { form_id: state.selectedReq.form_id, email: state.selectedReq.email, status: status, user_id: user_id }).then((res) => {
                     Swal.close()
                     if (res.status == "success") {
                         Swal.fire({
@@ -248,7 +254,7 @@ export default function LoginPg() {
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            setState(prev => ({ ...prev, selectedReq: [], refresh: !state.refresh, reason: '' }))
+                            setState(prev => ({ ...prev, selectedReq: [], refresh: !state.refresh }))
                         })
                     } else {
                         setOpen(true)
@@ -261,54 +267,48 @@ export default function LoginPg() {
         })
 
     }
-    const onSubmitClaim = (prev_status,status, id) => {
+    const onSubmitClaim = (status, id) => {
         // setOpen(false)
-        if(prev_status === 'Approved'){
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You want to change status to " + status,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-    
-                    loading_page()
-                    getData('requests/changeStatus', { form_id: id, status: status }).then((res) => {
-                        Swal.close()
-                        if (res.status == true) {
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'success',
-                                html: 'Success',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                setState(prev => ({ ...prev, selectedReq: [], refresh: !state.refresh }))
-                            })
-                        } else {
-                            // setOpen(true)
-                        }
-                        // setState(prev => ({ ...prev, requestList: res.result.data, requestListDisplay: res.result.data }))
-                    })
-                }
-            })
-        }
-       
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to change status to " + status,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                loading_page()
+                getData('requests/changeStatus', { form_id: id, status: status }).then((res) => {
+                    Swal.close()
+                    if (res.status == true) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            html: 'Success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            setState(prev => ({ ...prev, selectedReq: [], refresh: !state.refresh }))
+                        })
+                    } else {
+                        // setOpen(true)
+                    }
+                    // setState(prev => ({ ...prev, requestList: res.result.data, requestListDisplay: res.result.data }))
+                })
+            }
+        })
 
     }
-    const onDeny = (e) => {
-        e.preventDefault();
-        onSubmitApproved('Deny')
-    }
+
     return (
         <React.Fragment>
             <>
                 <Breadcrumbs aria-label="breadcrumb" gutterBottom>
                     <Link color="inherit" href="/">Home Page</Link>
-                    <Typography color="textPrimary">Request List</Typography>
+                    <Typography color="textPrimary">Transaction History</Typography>
                 </Breadcrumbs>
                 <Grid container spacing={1}>
                     {/* <Grid item xs={12} md={6}>
@@ -343,7 +343,7 @@ export default function LoginPg() {
 
                         </Card>
                     </Grid> */}
-                    <Grid item xs={12} md={12}>
+                    {/* <Grid item xs={12} md={12}>
                         <Card variant='outlined'>
                             <CardContent>
                                 <Grid container spacing={1}>
@@ -359,6 +359,8 @@ export default function LoginPg() {
                                                     }
                                                     return count
                                                 }, 0)}</Typography>
+
+
                                             </CardContent>
                                         </Card>
                                     </Grid>
@@ -418,8 +420,7 @@ export default function LoginPg() {
                                                     <Typography variant='p' className={classes.cardFont}>My Released</Typography>
                                                 </div>
                                                 <Typography style={{ fontSize: 30, fontWeight: 'bold' }}>{state.requestList.reduce((count, val) => {
-
-                                                    if (val.status === 'Released' && adminReducer.loginData[0]?.user_id === val.user_id) {
+                                                    if (val.status === 'Released' && adminReducer.loginData[0].user_id === val.user_id) {
                                                         count++
                                                     }
                                                     return count
@@ -435,7 +436,7 @@ export default function LoginPg() {
                                                     <Typography variant='p' className={classes.cardFont}>My Approved</Typography>
                                                 </div>
                                                 <Typography style={{ fontSize: 30, fontWeight: 'bold' }}>{state.requestList.reduce((count, val) => {
-                                                    if (val.status === 'Approved' && adminReducer.loginData[0]?.user_id === val.user_id) {
+                                                    if (val.status === 'Approved' && adminReducer.loginData[0].user_id === val.user_id) {
                                                         count++
                                                     }
                                                     return count
@@ -448,10 +449,39 @@ export default function LoginPg() {
                             </CardContent>
                         </Card>
 
+                    </Grid> */}
+                    <Grid item xs={12} md={6} >
+
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid container item xs={12} md={6} justify='flex-end'>
                         <Grid container spacing={1}>
-                            <Grid item xs={12} md={6} >
+                            <Grid item xs={12} md={5}>
+                                <div style={{ borderStyle: 'solid', borderWidth: 1, borderColor: '#95a5a6', padding: 7, borderRadius: 4 }}>
+                                    <input onChange={onChangeText} name='from' type='date' style={{ width: '100%', borderStyle: 'none', backgroundColor: 'transparent', outline: 'none' }} />
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} md={5}>
+                                <div style={{ borderStyle: 'solid', borderWidth: 1, borderColor: '#95a5a6', padding: 7, borderRadius: 4 }}>
+                                    <input onChange={onChangeText} name='to' type='date' style={{ width: '100%', borderStyle: 'none', backgroundColor: 'transparent', outline: 'none' }} />
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} md={2} >
+                                <Button onClick={() => { setState(prev => ({ ...prev, refresh: !state.refresh, statusFilter: 'All', searchDriver: "" })) }} style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
+                                    Filter
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} md={12} >
+                        <div style={{ marginTop: 10 }} />
+
+
+                    </Grid>
+
+                    <Grid item xs={12} md={5} >
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} md={5} >
                                 <FormControl size={"small"} style={{ width: '100%' }} variant="outlined" className={classes.formControl}>
                                     <InputLabel id="demo-simple-select-filled-label">Status</InputLabel>
                                     <Select
@@ -469,8 +499,9 @@ export default function LoginPg() {
                                         <MenuItem value={"Released"}>Released</MenuItem>
                                         <MenuItem value={"Pending"}>Pending</MenuItem>
                                         <MenuItem value={"Deny"}>Deny</MenuItem>
-                                        <MenuItem value={"My Released"}>My Released</MenuItem>
-                                        <MenuItem value={"My Approved"}>My Approved</MenuItem>
+
+                                        {/* <MenuItem value={"My Released"}>My Released</MenuItem>
+                                        <MenuItem value={"My Approved"}>My Approved</MenuItem> */}
 
 
                                     </Select>
@@ -481,16 +512,36 @@ export default function LoginPg() {
                                     Filter
                                 </Button>
                             </Grid>
-                            <Grid item xs={12} md={3} >
+                            <Grid item xs={12} md={2} >
                                 <Button onClick={() => { setState(prev => ({ ...prev, refresh: !state.refresh, statusFilter: 'All', searchDriver: "" })) }} style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
                                     <CachedIcon />
                                 </Button>
                             </Grid>
+                            {/* <Grid item xs={12} md={2} >
+                                <ExcelFile filename={'Transaction (' + state.from + ' to ' + state.to + ')'} element={<Button style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
+                                    <CloudDownloadIcon />
+                                </Button>} >
+                                    <ExcelSheet data={RequestList} name="SSS Contribution">
+                                        <ExcelColumn label="Request ID" value="form_id" />
+                                        <ExcelColumn label="Student No." value="studnum" />
+                                        <ExcelColumn label="Last Name" value="lname" />
+                                        <ExcelColumn label="First Name" value="fname" />
+                                        <ExcelColumn label="Department" value='department' />
+                                        <ExcelColumn label="Degree" value='degree' />
+                                        <ExcelColumn label="EC" value='sssEc' />
+                                        <ExcelColumn label="Status" value='status' />
+                                        <ExcelColumn label="Request Date Added" value='req_date_added' />
+                                        <ExcelColumn label="Request Date Approved" value='req_date_approved' />
+                                    </ExcelSheet>
+                                </ExcelFile>
+
+                            </Grid> */}
+
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={5}></Grid>
+                    <Grid item xs={12} md={3}></Grid>
 
-                    <Grid container item xs={12} md={3} justify='flex-end'>
+                    <Grid container item xs={12} md={4} justify='flex-end'>
                         <TextField onChange={onChangeText} name='searchDriver' style={{ width: '100%' }} variant='outlined' size='small' label="Search Name / Request ID"></TextField>
                     </Grid>
 
@@ -547,21 +598,21 @@ export default function LoginPg() {
                                                     <TableCell
                                                         style={{ whiteSpace: 'nowrap' }}
                                                     >
-                                                        <Tooltip title='View'>
-                                                            <CallMadeIcon onClick={() => {
-                                                                getData('requests/getRequestsLogs', row.form_id).then((res) => {
-                                                                    handleClickOpen()
-                                                                    setState(prev => ({ ...prev, selectedReq: row, logsData: res.result.data }))
-                                                                })
-                                                            }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: '10' }} />
-                                                        </Tooltip>
+                                                        <CallMadeIcon onClick={() => {
+                                                            getData('requests/getRequestsLogs', row.form_id).then((res) => {
+                                                                handleClickOpen()
+                                                                setState(prev => ({ ...prev, selectedReq: row, logsData: res.result.data }))
+                                                            })
+                                                        }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: '10' }} />
+                                                        {/* {row.status === 'Approved' ?
+                                                            <ThumbsUpDownIcon onClick={() => {
 
-                                                            <Tooltip title='Release'>
-                                                                <OpenInBrowserIcon onClick={() => {
-                                                                    onSubmitClaim( row.status,'Released', row.form_id)
-                                                                }} style={{ cursor: 'pointer', color: row.status === 'Approved' ?'#ed9e21':'#95a5a6', marginRight: '10' }} />
-                                                            </Tooltip>
-                                                    
+                                                                onSubmitClaim('Released', row.form_id)
+                                                            }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: '10' }} />
+                                                            : undefined
+
+                                                        } */}
+
 
                                                     </TableCell>
                                                     {columns.map((column) => {
@@ -570,14 +621,14 @@ export default function LoginPg() {
                                                             value = String(row.lname + ' ' + row.fname + ', ' + row.mname).toLocaleUpperCase()
                                                         }
                                                         return (
-                                                            <TableCell key={column.id} align={column.align} style={{ whiteSpace: 'nowrap' }}>
+                                                            <TableCell key={column.id} align={column.align}>
                                                                 {column.format && typeof value === 'number' ? column.format(value) : value}
                                                             </TableCell>
                                                         );
                                                     })}
                                                     <TableCell>
                                                         {row.appliedFor !== "" && JSON.parse(row.appliedFor).map((val, index2) => {
-                                                            return <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', }}>
+                                                            return <div style={{ display: 'flex', alignItems: 'center', }}>
                                                                 <div style={{ width: 10, height: 10, borderRadius: 5, background: '#f1c40f', marginRight: 5 }} />
                                                                 <Typography key={index2}>{val}</Typography>
                                                             </div>
@@ -778,18 +829,13 @@ export default function LoginPg() {
                                 : undefined
 
                             }
-
+                            {/* 
                             <Grid container spacing={1} style={{ marginTop: 10 }}>
                                 <Grid item xs={12} md={8} >
                                 </Grid>
                                 {state.selectedReq.status == 'Pending' &&
                                     <Grid container item xs={12} md={2} justify='flex-end'>
-                                        <Button onClick={() => {
-                                            setState(prev => ({
-                                                ...prev,
-                                                deny_modal: true
-                                            }))
-                                        }} style={{ width: width < 700 ? '100%' : undefined, background: '#e74c3c', color: '#fff', fontWeight: "bold", }} variant="contained">
+                                        <Button onClick={() => { onSubmitApproved('Denied') }} style={{ width: width < 700 ? '100%' : undefined, background: '#e74c3c', color: '#fff', fontWeight: "bold", }} variant="contained">
                                             Deny
                                         </Button>
                                     </Grid>
@@ -810,7 +856,7 @@ export default function LoginPg() {
                                 }
 
 
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Grid container spacing={1}>
@@ -870,13 +916,11 @@ export default function LoginPg() {
                                                             <CardContent>
                                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                                     <Typography variant='p' style={{ fontWeight: 'bold' }}>{String(val.user_lname + ' ' + val.user_fname)}  <span style={{ color: '#3498db' }}>{moment(val.date_added).format('YYYY-MM-DD hh:mm A')}</span></Typography>
-                                                                    <Typography variant='p'>Request {val.status}</Typography>
+                                                                    <Typography variant='p'>Request Approved</Typography>
                                                                     {val.status === 'Deny' ?
                                                                         <Typography variant='p'>Reason : {state.selectedReq.reason}</Typography>
                                                                         : undefined
                                                                     }
-
-
                                                                 </div>
                                                             </CardContent>
                                                         </Card>
@@ -896,57 +940,6 @@ export default function LoginPg() {
 
                         </Grid>
                     </Grid>
-                </Dialog>
-                <Dialog
-                    fullWidth
-                    maxWidth="xs"
-                    open={state.deny_modal}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={() => {
-                        setState(prev => ({
-                            ...prev,
-                            deny_modal: false
-                        }))
-                    }}
-                    style={{ zIndex: 9999 }}
-                    aria-labelledby="alert-dialog-slide-title"
-                    aria-describedby="alert-dialog-slide-description"
-
-                >
-                    <div onClick={() => {
-                        setState(prev => ({
-                            ...prev,
-                            deny_modal: false
-                        }))
-                    }} style={{ position: 'absolute', right: 3, top: 3, cursor: 'pointer' }}>
-                        <CloseIcon />
-
-                    </div>
-                    <form onSubmit={onDeny}>
-                        <DialogTitle id="alert-dialog-slide-title">{"Deny"}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
-                                <Grid container spacing={1}>
-                                    <Grid item xs={12} md={12}>
-                                        <TextField value={state.reason} variant='outlined' multiline rows={4} style={{ width: '100%' }} required placeholder='Reason' onChange={(e) => setState(prev => ({
-                                            ...prev,
-                                            reason: e.target.value
-                                        }))} />
-                                    </Grid>
-
-                                </Grid>
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button type='submit' color="primary">
-                                Proceed
-                            </Button>
-                            {/* <Button type='submit' style={{ background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
-                Create
-              </Button> */}
-                        </DialogActions>
-                    </form>
                 </Dialog>
             </>
         </React.Fragment>

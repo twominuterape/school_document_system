@@ -15,8 +15,8 @@ import { getData } from '../../../api/api'
 import { loading_page } from '../../loading'
 import Swal from 'sweetalert2'
 import CallMadeIcon from '@material-ui/icons/CallMade';
-import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {
     HashRouter as Router,
     Route,
@@ -29,8 +29,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 const columns = [
-    { id: 'd_id', label: 'ID' },
+    { id: 'c_id', label: 'ID' },
     { id: 'dept_name', label: 'Department Name' },
+    { id: 'course_name', label: 'Course Name' },
+
 
 ];
 
@@ -67,7 +69,7 @@ const useStyles = makeStyles({
 });
 
 export default function StickyHeadTable() {
-    const history = useHistory()
+    const { dept_name, dept_id } = useParams();
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -76,8 +78,8 @@ export default function StickyHeadTable() {
         departmentName: '',
         departmentList: [],
         refresh: false,
-        selectedData:[],
-        actionButton:'Create'
+        actionButton: 'Create',
+        selectedData: []
     })
 
     const handleChangePage = (event, newPage) => {
@@ -92,12 +94,14 @@ export default function StickyHeadTable() {
     const CreateFolder = (e) => {
         e.preventDefault();
         let data = {
-            dept_name: state.departmentName,
-            actionButton:state.actionButton,
-            selectedData:state.selectedData
+            course_name: state.departmentName,
+            department: dept_id,
+            dept_name: dept_name,
+            actionButton: state.actionButton,
+            selectedData: state.selectedData
         }
         loading_page()
-        getData('Requests/insertDepartment', data).then((res) => {
+        getData('Requests/insertCourse', data).then((res) => {
             Swal.close()
             if (res.status == true) {
                 Swal.fire({
@@ -134,8 +138,9 @@ export default function StickyHeadTable() {
     }
 
     React.useEffect(() => {
+        let data = { dept_id: dept_id }
         loading_page()
-        getData('Requests/getDepartment').then((res) => {
+        getData('Requests/getCourses', data).then((res) => {
             Swal.close()
             setState(prev => ({
                 ...prev,
@@ -156,9 +161,10 @@ export default function StickyHeadTable() {
         let data = {
             id:id   
         }
-        if(window.confirm('Warning, Are you sure you want to delete this department?')){
+        
+        if(window.confirm('Warning, Are you sure you want to delete this course?')){
             loading_page()
-            getData('Requests/deleteDepartment',data).then((res) => {
+            getData('Requests/deleteCourse',data).then((res) => {
                 Swal.close()
                 setState(prev => ({
                     ...prev,
@@ -174,9 +180,9 @@ export default function StickyHeadTable() {
     return (
         <Grid container spacing={1}>
 
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
                 <Button startIcon={<AddIcon />} onClick={() => setOpen(true)} style={{ width: '100%', background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
-                    New Department
+                    New Course
                 </Button>
             </Grid>
             <Grid item xs={12} md={12}>
@@ -217,31 +223,27 @@ export default function StickyHeadTable() {
                                                     })}
                                                     <TableCell>
                                                         <div style={{ display: 'flex' }}>
+                                                           
                                                             <Tooltip title="View">
                                                                 {/* <NewLink to={"file:///C:/xampp/htdocs/test_api/assets/docs_files/"+row.document_name} target="_blank"> */}
-                                                                <CallMadeIcon onClick={() => {
-                                                                    // alert('hehehe')
-                                                                    history.push('/courses/' + row.dept_name + '/' + row.d_id)
-
+                                                                <EditIcon onClick={() => {
+                                                                    setOpen(true); setState(prev => ({
+                                                                        ...prev,
+                                                                        actionButton: 'Edit',
+                                                                        departmentName: row.course_name,
+                                                                        selectedData: row
+                                                                    }))
                                                                 }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: 5 }} />
-                                                                {/* </NewLink> */}
-                                                            </Tooltip>
-                                                            <Tooltip title="Edit">
-                                                                {/* <NewLink to={"file:///C:/xampp/htdocs/test_api/assets/docs_files/"+row.document_name} target="_blank"> */}
-                                                                <EditIcon  onClick={() => {setOpen(true);setState(prev=>({
-                                                                    ...prev,selectedData:row,departmentName:row.dept_name,actionButton:'Edit'
-                                                                }))}} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: 5 }} />
                                                                 {/* </NewLink> */}
                                                             </Tooltip>
                                                             <Tooltip title="Delete">
                                                                 {/* <NewLink to={"file:///C:/xampp/htdocs/test_api/assets/docs_files/"+row.document_name} target="_blank"> */}
                                                                 <DeleteIcon onClick={() => {
-                                                                   onDelete(row.d_id)
+                                                                    onDelete(row.c_id)
 
                                                                 }} style={{ cursor: 'pointer', color: '#ed9e21', marginRight: 5 }} />
                                                                 {/* </NewLink> */}
                                                             </Tooltip>
-                                                           
                                                         </div>
 
                                                     </TableCell>
@@ -277,15 +279,17 @@ export default function StickyHeadTable() {
             >
                 <div onClick={() => setOpen(false)} style={{ position: 'absolute', right: 3, top: 3, cursor: 'pointer' }}>
                     <CloseIcon />
-
                 </div>
                 <form onSubmit={CreateFolder}>
-                    <DialogTitle id="alert-dialog-slide-title">{state.actionButton+" Department"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-slide-title">{state.actionButton + " Course "}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-slide-description">
                             <Grid container spacing={1}>
                                 <Grid item xs={12} md={12}>
                                     <TextField onChange={onChangeText} value={state.departmentName} style={{ width: '100%', textTransform: 'uppercase' }} name='departmentName' required id="standard-required" label="Name" />
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Typography><i>Please follow the format: BS Information Technology (BSIT)</i></Typography>
                                 </Grid>
                                 <Grid item xs={12} md={12}>
                                     {/* <DropzoneArea
@@ -305,7 +309,7 @@ export default function StickyHeadTable() {
                             Disagree
                         </Button> */}
                         <Button type='submit' style={{ background: '#ed9e21', color: '#fff', fontWeight: "bold" }} variant="contained">
-                           {state.actionButton}
+                            {state.actionButton}
                         </Button>
                     </DialogActions>
                 </form>
