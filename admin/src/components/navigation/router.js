@@ -175,7 +175,7 @@ export default function LoginPg() {
                             <ChevronLeftIcon />
                         </IconButton>
                         <Typography variant="h6" noWrap style={{ fontWeight: 'bold', color: '#7f8c8d' }}>
-                            Document Management System
+                            Document Management Systemsssssss
                         </Typography>
                     </Toolbar>
                 </AppBar>
