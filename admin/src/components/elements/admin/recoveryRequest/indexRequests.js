@@ -53,13 +53,13 @@ import CachedIcon from '@material-ui/icons/Cached';
 import Swal from 'sweetalert2';
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import ReactExport from "react-data-export";
+// import ReactExport from "react-data-export";
 import { useSelector, useDispatch } from 'react-redux'
 import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+// const ExcelFile = ReactExport.ExcelFile;
+// const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+// const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
