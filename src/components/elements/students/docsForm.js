@@ -87,38 +87,38 @@ export default function DocsPg({warning}) {
     const History = useHistory()
     const [refreshs, setrefreshs] = React.useState(false);
     const [openCertified, setopenCertified] = React.useState(false);
-    const [docstype, setdocstype] = React.useState([
-        {type:'Diploma',price:'45'},
-        {type:'Transcript of Records (TOR)',price:'195'},
-        {type:'Certification',price:'145'},
-        {type:'Transfer Credentials',price:'485'},
-        {type:'CAV Credentials',price:'250'},
-        {type:'Certified True Copy of Document',price:'30'},
-    ]);
+    // const [docstype, setdocstype] = React.useState([
+    //     {type:'Diploma',price:'45'},
+    //     {type:'Transcript of Records (TOR)',price:'195'},
+    //     {type:'Certification',price:'145'},
+    //     {type:'Transfer Credentials',price:'485'},
+    //     {type:'CAV Credentials',price:'250'},
+    //     {type:'Certified True Copy of Document',price:'30'},
+    // ]);
 
-    const [torType, settorType] = React.useState([
-        {type:'Personal Copy'},
-        {type:'Employment'},
-        {type:'Graduate School'},
-        {type:'Transfer Credentials'},
-        {type:'Scholarship Application'},
-        {type:'Transfer / Evaluation'},
-        {type:'Lisensure Examination'},
-        {type:'Others'},
-        {type:'Not Applicable'},
-    ]);
+    // const [torType, settorType] = React.useState([
+    //     {type:'Personal Copy'},
+    //     {type:'Employment'},
+    //     {type:'Graduate School'},
+    //     {type:'Transfer Credentials'},
+    //     {type:'Scholarship Application'},
+    //     {type:'Transfer / Evaluation'},
+    //     {type:'Lisensure Examination'},
+    //     {type:'Others'},
+    //     {type:'Not Applicable'},
+    // ]);
 
-    const [certificationType, setcertificationType] = React.useState([
-        {type:'General Weighted Average (GWA)'},
-        {type:'Enrollment'},
-        {type:'Graduation'},
-        {type:'Good Moral Character (for Licensure Exam)'},
-        {type:'Good Moral Character (for Transfer)'},
-        {type:'Eligibility to Transfer (Undergraduate)'},
-        {type:'Eligibility to Transfer (for Graduate School)'},
-        {type:'English as Medium of Instruction'},
-        {type:'Not Applicable'},
-    ]);
+    // const [certificationType, setcertificationType] = React.useState([
+    //     {type:'General Weighted Average (GWA)'},
+    //     {type:'Enrollment'},
+    //     {type:'Graduation'},
+    //     {type:'Good Moral Character (for Licensure Exam)'},
+    //     {type:'Good Moral Character (for Transfer)'},
+    //     {type:'Eligibility to Transfer (Undergraduate)'},
+    //     {type:'Eligibility to Transfer (for Graduate School)'},
+    //     {type:'English as Medium of Instruction'},
+    //     {type:'Not Applicable'},
+    // ]);
     const [selectedTor, setselectedTor] = React.useState('');
     const [selectedCert, setselectedCert] = React.useState('');
     const [appliedCheck, setappliedCheck] = React.useState([]);
@@ -133,6 +133,10 @@ export default function DocsPg({warning}) {
     const Selected_Cert = useSelector(state => state.reqDocsReducer.cert_type)
     const CertifiedFiles = useSelector(state => state.reqDocsReducer.certifiedCopy)
 
+    const documentCat = useSelector(state => state.reqDocsReducer.documentCat)
+    const torCat = useSelector(state => state.reqDocsReducer.torCat)
+    const CertifiedCat = useSelector(state => state.reqDocsReducer.certificationCat)
+    
 
     const handleApply = (event) => {
         let appliedArray = ApplyFor
@@ -186,7 +190,6 @@ export default function DocsPg({warning}) {
     };
 
     useEffect(()=>{
-        console.log(docstype)
     },[])
     return (
         <Grid container spacing={1} >
@@ -204,12 +207,19 @@ export default function DocsPg({warning}) {
                 <Typography  style={{textAlign:'left',color:'#2f3640',fontSize:16}}> Please select the type(s) of document you are requesting by clicking on the appropriate checkbox(es). * </Typography>
                 <FormControl component="fieldset" required={true}>
                     <FormGroup>
-                        {docstype.map((value,index)=>{
+                        {/* {docstype.map((value,index)=>{
                             return<FormControlLabel
                             key={index}
                             control={<Checkbox checked={ApplyFor.findIndex(x => String(x).toUpperCase() === String(value.type).toUpperCase()) !== -1} onChange={handleApply} name={value.type} />}
                             label={value.type}/>
+                        })} */}
+                            {documentCat.map((value,index)=>{
+                            return<FormControlLabel
+                            key={index}
+                            control={<Checkbox checked={ApplyFor.findIndex(x => String(x).toUpperCase() === String(value.option_name).toUpperCase()) !== -1} onChange={handleApply} name={value.option_name} />}
+                            label={value.option_name}/>
                         })}
+                        
                     </FormGroup>
                 </FormControl>
                 <Divider style={{marginTop:10}}/>
@@ -226,8 +236,8 @@ export default function DocsPg({warning}) {
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>
-                    {torType.map((value,index)=>{
-                        return<MenuItem value={value.type} key={index}>{value.type}</MenuItem>
+                    {torCat.map((value,index)=>{
+                        return<MenuItem value={value.option_name} key={index}>{value.option_name}</MenuItem>
                     })}
                     </Select>
                 </FormControl>
@@ -245,9 +255,12 @@ export default function DocsPg({warning}) {
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>
-                    {certificationType.map((value,index)=>{
-                        return<MenuItem value={value.type} key={index}>{value.type}</MenuItem>
+                    {CertifiedCat.map((value,index)=>{
+                        return<MenuItem value={value.option_name} key={index}>{value.option_name}</MenuItem>
                     })}
+                    {/* {certificationType.map((value,index)=>{
+                        return<MenuItem value={value.type} key={index}>{value.type}</MenuItem>
+                    })} */}
                     </Select>
                 </FormControl>
                 <Divider style={{marginTop:10}}/>

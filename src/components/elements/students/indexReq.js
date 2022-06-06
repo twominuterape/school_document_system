@@ -227,7 +227,7 @@ export default function LoginPg() {
                 }
             }
             loading_page()
-            axios.post("http://beta.gzonetechph.com/Application_form/postApplication", data, config)
+            axios.post("https://api.docsystem.online/Application_form/postApplication", data, config)
             .then((res) => {
                 Swal.close()
                 if(JSON.stringify(res.data).includes('success')){
@@ -369,9 +369,13 @@ export default function LoginPg() {
 
     const getStudents=()=>{
         loading_page()
+        let params = {
+            type:""
+        }
         Promise.all([
             axios.post('https://api.innovattosoft.com/users/students'),
-            axios.post('http://beta.gzonetechph.com/Application_form/fetchAvailableCourses')
+            axios.post('https://api.docsystem.online/Application_form/fetchAvailableCourses'),
+            axios.post('https://api.docsystem.online/Requests/getOptions',{param:{type:""}})
           ]).then((res)=>{
             Swal.close()
             Dispatch({
@@ -383,6 +387,19 @@ export default function LoginPg() {
                 data:{
                     availableCourse:res[1].data.course,
                     availableDept:res[1].data.dept,
+                }
+            })
+            const filterDocs = res[2].data.result.data.filter(item=>item.type === "Document")
+            const filterTor = res[2].data.result.data.filter(item=>item.type === "OR Type" || item.type === "TOR Type")
+            const filterCert = res[2].data.result.data.filter(item=>item.type === "Certification Type")
+            const filterAdmission = res[2].data.result.data.filter(item=>item.type === "Admission Type")
+            Dispatch({
+                type:'docs_Records',
+                data:{
+                    documentCat:filterDocs,
+                    torCat:filterTor,
+                    certificationCat:filterCert,
+                    admissionCat:filterAdmission,
                 }
             })
             setgeneratedOTP(true)
@@ -423,8 +440,6 @@ export default function LoginPg() {
             setgeneratedOTP(false)
             RecoverySubmit()
         }
-
-       
     }
 
     const RecoverySubmit=()=>{

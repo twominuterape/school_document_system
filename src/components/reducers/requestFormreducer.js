@@ -38,7 +38,11 @@ const INITIAL_STATE = {
         {type:'CAV Credentials',price:'250.00'},
         {type:'transfer Credentials',price:'485.00'},
         {type:'Certified True Copy of Document',price:'30.00'},
-    ]
+    ],
+    documentCat:[],
+    torCat:[],
+    certificationCat:[],
+    admissionCat:[]
 }
 
 const reqDocsReducer = (state = INITIAL_STATE,action)=>{
@@ -104,6 +108,11 @@ const reqDocsReducer = (state = INITIAL_STATE,action)=>{
                 receiptCopy:action.reset_receipt,
                 breakdown:action.reset_list,
                 total:action.reset_total,
+            }
+        case 'docs_Records':
+            return {
+                ...state,
+                ...action.data
             }  
          
         default:

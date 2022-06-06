@@ -99,6 +99,7 @@ export default function AccountRecover({warning}) {
     const CertifiedFiles = useSelector(state => state.reqDocsReducer.certifiedCopy)
 
     const userData_recovery = useSelector(state => state.studData.studentRecover)
+    const availableCourse = useSelector(state => state.studData.availableCourse)
 
     const onChangeRecover = (event) => {
         Dispatch({
@@ -112,13 +113,13 @@ export default function AccountRecover({warning}) {
         })
     };
 
-    const handleGender = (event) => {
+    const handleCourse = (event) => {
         Dispatch({
             type:'student_records_',
             data:{
                 studentRecover:{
                     ...userData_recovery,
-                    'gender': event.target.value
+                    'department': event.target.value
                 }, 
             }
         })
@@ -164,7 +165,7 @@ export default function AccountRecover({warning}) {
                     value={userData_recovery.lname}
                     variant="outlined" />
             </Grid>
-            <Grid item xs={12} md={4} >
+            {/* <Grid item xs={12} md={4} >
                 <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Birthdate</Typography>
                 <TextField
                     size="small"
@@ -189,8 +190,9 @@ export default function AccountRecover({warning}) {
                         <MenuItem value="Female">Female</MenuItem>
                     </Select>
                 </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
+            </Grid> */}
+          
+            <Grid item xs={12} md={6}>
                 <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Email</Typography>
                 <TextField
                     size="small"
@@ -202,7 +204,21 @@ export default function AccountRecover({warning}) {
                     value={userData_recovery.email_rec}
                     variant="outlined" />
             </Grid>
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={6}>
+                <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }} size={"small"} required={true}>
+                    <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Course</Typography>
+                    <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        value={userData_recovery.department}
+                        onChange={handleCourse}>
+                        {availableCourse.map((val,index)=>{
+                            return<MenuItem value={val.course_name} key={index}>{val.course_name}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>
+            </Grid> 
+            {/* <Grid item xs={12} md={12}>
                 <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Department</Typography>
                 <TextField
                     size="small"
@@ -214,7 +230,7 @@ export default function AccountRecover({warning}) {
                     value={userData_recovery.department}
                     variant="outlined" 
                     helperText="Please write your course in this format: BS Information Technology"/>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} md={12} >
                 <Typography style={{fontWeight:'bold',color:'#4b4b4b',fontSize:20,textAlign:'left'}}>Year Graduated</Typography>
                 <TextField

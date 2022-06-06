@@ -145,7 +145,7 @@ export default function ProofView() {
     const ApplyFor = useSelector(state => state.reqDocsReducer.appliedFor)
     const tor_selectedType = useSelector(state => state.reqDocsReducer.tor_type)
     const certificate_type = useSelector(state => state.reqDocsReducer.cert_type)
-    
+    const documentCat = useSelector(state => state.reqDocsReducer.documentCat)
     const handleClose = () => {
         setfiles([])
         setOpen(false);
@@ -171,7 +171,7 @@ export default function ProofView() {
 
     const paymentCompute=(qtyTor,qtyCert)=>{
         let payment_list = []
-        docstype.map((val,index)=>{
+        documentCat.map((val,index)=>{
             let doc_Request = []
             let price = 0
             let pages = 0
@@ -179,7 +179,7 @@ export default function ProofView() {
             let transferee = "No"
             let editable = "No"
             ApplyFor.map((val2,index2)=>{
-                if(val.type === val2){
+                if(val.option_name === val2){
                     if(val2 === "Transcript of Records (TOR)"){
                         if(tor_selectedType === "Personal Copy"){
                             pages=qtyTor

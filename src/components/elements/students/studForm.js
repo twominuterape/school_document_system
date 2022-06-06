@@ -100,14 +100,14 @@ export default function StudentView({warningadmiss}) {
     const History = useHistory()
     const [refreshs, setrefreshs] = React.useState(false);
     const [open, setOpen] = React.useState(false);
-    const [docstype, setdocstype] = React.useState([
-        {type:'Diploma'},
-        {type:'Transcript of Records (TOR)'},
-        {type:'Certification'},
-        {type:'Transfer Credentials'},
-        {type:'CAV Credentials'},
-        {type:'Certified True Copy of Document'},
-    ]);
+    // const [docstype, setdocstype] = React.useState([
+    //     {type:'Diploma'},
+    //     {type:'Transcript of Records (TOR)'},
+    //     {type:'Certification'},
+    //     {type:'Transfer Credentials'},
+    //     {type:'CAV Credentials'},
+    //     {type:'Certified True Copy of Document'},
+    // ]);
 
     const [state, setState] = React.useState({
         checkedA: true,
@@ -116,44 +116,44 @@ export default function StudentView({warningadmiss}) {
         checkedG: true,
       });
 
-    const [torType, settorType] = React.useState([
-        {type:'Personal Copy'},
-        {type:'Employment'},
-        {type:'Graduate School'},
-        {type:'Transfer Credentials'},
-        {type:'Scholarship Application'},
-        {type:'Transfer / Evaluation'},
-        {type:'Lisensure Examination'},
-        {type:'Others'},
-        {type:'Not Applicable'},
-    ]);
+    // const [torType, settorType] = React.useState([
+    //     {type:'Personal Copy'},
+    //     {type:'Employment'},
+    //     {type:'Graduate School'},
+    //     {type:'Transfer Credentials'},
+    //     {type:'Scholarship Application'},
+    //     {type:'Transfer / Evaluation'},
+    //     {type:'Lisensure Examination'},
+    //     {type:'Others'},
+    //     {type:'Not Applicable'},
+    // ]);
 
-    const [certificationType, setcertificationType] = React.useState([
-        {type:'General Weighted Average (GWA)'},
-        {type:'Enrollment'},
-        {type:'Graduation'},
-        {type:'Good Moral Character (for Licensure Exam)'},
-        {type:'Good Moral Character (for Transfer)'},
-        {type:'Eligibility to Transfer (Undergraduate)'},
-        {type:'Eligibility to Transfer (for Graduate School)'},
-        {type:'English as Medium of Instruction'},
-        {type:'Not Applicable'},
-    ]);
+    // const [certificationType, setcertificationType] = React.useState([
+    //     {type:'General Weighted Average (GWA)'},
+    //     {type:'Enrollment'},
+    //     {type:'Graduation'},
+    //     {type:'Good Moral Character (for Licensure Exam)'},
+    //     {type:'Good Moral Character (for Transfer)'},
+    //     {type:'Eligibility to Transfer (Undergraduate)'},
+    //     {type:'Eligibility to Transfer (for Graduate School)'},
+    //     {type:'English as Medium of Instruction'},
+    //     {type:'Not Applicable'},
+    // ]);
 
-    const [departmenttype, setdepartmenttype] = React.useState([
-        {type:'CAS'},
-        {type:'CITCS'},
-        {type:'COE'},
-        {type:'CTE'},
-        {type:'CTHM'},
-        {type:'SEBA'},
-    ]);
+    // const [departmenttype, setdepartmenttype] = React.useState([
+    //     {type:'CAS'},
+    //     {type:'CITCS'},
+    //     {type:'COE'},
+    //     {type:'CTE'},
+    //     {type:'CTHM'},
+    //     {type:'SEBA'},
+    // ]);
 
-    const [admissionType, setadmissionType] = React.useState([
-        {type:'Junior High School Report Card (JHS Form 138)'},
-        {type:'Senior High School Report Card (SHS Form 138)'},
-        {type:'Transcript of Records (for transferees)'},
-    ]);
+    // const [admissionType, setadmissionType] = React.useState([
+    //     {type:'Junior High School Report Card (JHS Form 138)'},
+    //     {type:'Senior High School Report Card (SHS Form 138)'},
+    //     {type:'Transcript of Records (for transferees)'},
+    // ]);
     const [age, setAge] = React.useState('');
     const theme = useTheme();
     const Dispatch = useDispatch();
@@ -164,7 +164,7 @@ export default function StudentView({warningadmiss}) {
     const availableDepartment = useSelector(state => state.studData.availableDept)
 
     const student_Input = useSelector(state => state.reqDocsReducer.studentDetails)
-
+    const admissionCat = useSelector(state => state.reqDocsReducer.admissionCat)
 
     const onChange = (event) => {
         Dispatch({
@@ -222,10 +222,7 @@ export default function StudentView({warningadmiss}) {
       };
 
     useEffect(()=>{
-        console.log({
-            availableDepartment:availableDepartment,
-            availableCourses:availableCourses
-        })
+       
     },[])
     return (
         <Grid container spacing={1} >
@@ -497,11 +494,17 @@ export default function StudentView({warningadmiss}) {
                         <FormControl component="fieldset" required={true}>
                             <FormLabel component="legend">Basis of Admission</FormLabel>
                             <FormGroup>
-                                {admissionType.map((value,index)=>{
+                                {/* {admissionType.map((value,index)=>{
                                     return<FormControlLabel
                                     key={index}
                                     control={<Checkbox checked={String(student_Input.admission).toUpperCase() === String(value.type).toUpperCase() ? true : false} onChange={handleAdmission} name={value.type} />}
                                     label={value.type}/>
+                                })} */}
+                                 {admissionCat.map((value,index)=>{
+                                    return<FormControlLabel
+                                    key={index}
+                                    control={<Checkbox checked={String(student_Input.admission).toUpperCase() === String(value.option_name).toUpperCase() ? true : false} onChange={handleAdmission} name={value.option_name} />}
+                                    label={value.option_name}/>
                                 })}
                             </FormGroup>
                         </FormControl>
