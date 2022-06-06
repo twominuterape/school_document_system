@@ -136,7 +136,7 @@ export default function DocsPg({warning}) {
     const documentCat = useSelector(state => state.reqDocsReducer.documentCat)
     const torCat = useSelector(state => state.reqDocsReducer.torCat)
     const CertifiedCat = useSelector(state => state.reqDocsReducer.certificationCat)
-    
+     
 
     const handleApply = (event) => {
         let appliedArray = ApplyFor
