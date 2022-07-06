@@ -115,6 +115,7 @@ export default function LoginPg() {
     const [otpview, setotpview] = React.useState("");
     const [createdOTP, setcreatedOTP] = React.useState("");
     const [insertedTOP, setinsertedTOP] = React.useState("");
+    const [studentSelfData, setstudentSelfData] = React.useState([]);
 
     const [generatedOTP, setgeneratedOTP] = React.useState(false);
     const [FormCount, setFormCount] = React.useState(0);
@@ -300,6 +301,7 @@ export default function LoginPg() {
         })
         if(filtered_pin.length > 0){
             setgeneratedOTP(true)
+            setstudentSelfData(filtered_pin)
             setotpview("addOTP")
         }else{
             Swal.fire({
@@ -366,7 +368,6 @@ export default function LoginPg() {
             }
         }
     }
-
     const getStudents=()=>{
         loading_page()
         let params = {
@@ -431,14 +432,17 @@ export default function LoginPg() {
                 setgeneratedOTP(false)
                 AutomaticEmail(filterName[currentIndex].schoolId)
             }else{
-                setdisplayConfirmation(false)
-                setgeneratedOTP(false)
-                RecoverySubmit()
+
+                // setdisplayConfirmation(false)
+                // setgeneratedOTP(false)
+                alert('No matching records found')
+                // RecoverySubmit()
             }
         }else{
-            setdisplayConfirmation(false)
-            setgeneratedOTP(false)
-            RecoverySubmit()
+            // setdisplayConfirmation(false)
+            // setgeneratedOTP(false)
+            alert('No matching records found')
+            // RecoverySubmit()
         }
     }
 
@@ -529,6 +533,7 @@ export default function LoginPg() {
                 <Issuance handleClickOpen={handleClickOpen}/>
             </Container>
 
+            {/* REQUEST FORM */}
             <Dialog
                 fullScreen={fullScreen}
                 open={open}
@@ -542,7 +547,7 @@ export default function LoginPg() {
                             <DocsView warning={warning}/>
                         }
                         {FormCount === 1 &&
-                            <StudentView warningadmiss={warningadmiss}/>
+                            <StudentView studentSelfData={studentSelfData} warningadmiss={warningadmiss}/>
                         }
                         {FormCount === 2 &&
                             <ReviewView warningadmiss={warningadmiss}/>
@@ -593,6 +598,7 @@ export default function LoginPg() {
                 </DialogActions>
             </Dialog>
 
+             {/* RECOVERY AND LOGIN                   */}
             <Dialog
                 fullScreen={fullScreen}
                 open={generatedOTP}
@@ -694,6 +700,8 @@ export default function LoginPg() {
                 <DialogActions/>
             </Dialog>
         
+
+            {/* HISTORY */}
             <Dialog
                 fullScreen={fullScreen}
                 open={displayHistory}

@@ -82,7 +82,7 @@ export default function HeadBread({handleHistory}) {
             <Grid container item xs={12} md={4}>
                 <div style={{display:'flex',width:'100%',justifyContent:'flex-end'}}>
                     {studentHistory.length > 0 &&
-                    <   Button variant="outlined" color="primary" onClick={handleHistory}> History </Button>
+                    <   Button variant="outlined" color="primary" onClick={handleHistory}> TRANSACTION HISTORY </Button>
                     }
                 </div>
             </Grid>

@@ -94,7 +94,7 @@ const helperTextStyles = makeStyles(theme => ({
       }
     }
   }));
-export default function StudentView({warningadmiss}) {
+export default function     StudentView({studentSelfData,warningadmiss}) {
     const classes = useStyles();
     const helperTestClasses = helperTextStyles();
     const History = useHistory()
@@ -170,18 +170,21 @@ export default function StudentView({warningadmiss}) {
         Dispatch({
             type:'passStudForm',
             studentdetails:{
-                [event.target.name]: event.target.value
+                [event.target.name]: String(event.target.value).toUpperCase()
             },
         })
     };
 
     const handleGraduate = (event) => {
-        Dispatch({
-            type:'passStudForm',
-            studentdetails:{
-                'gradStatus': event.target.value
-            },
-        })
+        let yearGrad = ''
+        yearGrad = event.target.value === 'Undergraduate' ? 'N/A' : ''
+            Dispatch({
+                type:'passStudForm',
+                studentdetails:{
+                    'gradStatus': event.target.value,
+                    'year_graduated':yearGrad
+                },
+            })
     };
 
     const handleDepartment = (event) => {
@@ -221,8 +224,20 @@ export default function StudentView({warningadmiss}) {
         }
       };
 
+    const initialInputed=()=>{
+        Dispatch({
+            type:'passStudForm',
+            studentdetails:{
+                'studnum': String(studentSelfData[0]?.schoolId).toUpperCase(),
+                'fname': String(studentSelfData[0]?.firstName).toUpperCase(),
+                'lname': String(studentSelfData[0]?.lastName).toUpperCase(),
+                'mname': String(studentSelfData[0]?.middleName).toUpperCase(),
+            },
+        })
+    }  
+
     useEffect(()=>{
-       
+        initialInputed()
     },[])
     return (
         <Grid container spacing={1} >
@@ -246,19 +261,21 @@ export default function StudentView({warningadmiss}) {
                             color="green"
                             helperText="Please enter your student number in this format: C201234"
                             variant="outlined"
+                            disabled
                             />
                     </Grid>
                     <Grid item xs={12} md={4} style={{marginTop:10}}>
                         <TextField
                             style={{width:'100%'}}
                             size={'small'}
-                            value={student_Input.lname}
+                            value={String(student_Input.lname).toLocaleUpperCase()}
                             onChange={onChange}
                             name="lname"
                             id="outlined-helperText"
                             required={true}
                             label="Last Name:"
                             variant="outlined"
+                            disabled
                             />
                     </Grid>
                     <Grid item xs={12} md={4} style={{marginTop:10}}>
@@ -267,24 +284,25 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.fname}
+                            value={String(student_Input.fname).toLocaleUpperCase()}
                             onChange={onChange}
                             name="fname"
                             label="First Name:"
                             variant="outlined"
+                            disabled
                             />
                     </Grid>
                     <Grid item xs={12} md={4} style={{marginTop:10}} >
                         <TextField
                         style={{width:'100%'}}
                             size={'small'}
-                            id="outlined-helperText"
                             required={true}
-                            value={student_Input.mname}
+                            value={String(student_Input.mname).toLocaleUpperCase()}
                             onChange={onChange}
                             name="mname"
                             label="Middle Name:"
                             variant="outlined"
+                            disabled
                             />
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}} >
@@ -293,7 +311,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.entry_year}
+                            value={String(student_Input.entry_year).toLocaleUpperCase()}
                             onChange={onChange}
                             name="entry_year"
                             FormHelperTextProps={{ classes: helperTestClasses }}
@@ -308,7 +326,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.last_attn}
+                            value={String(student_Input.last_attn).toLocaleUpperCase()}
                             onChange={onChange}
                             name="last_attn"
                             FormHelperTextProps={{ classes: helperTestClasses }}
@@ -336,11 +354,12 @@ export default function StudentView({warningadmiss}) {
                     </Grid>
                     <Grid item xs={12} md={12} style={{marginTop:10}}>
                         <TextField
+                            disabled={student_Input.gradStatus === 'Undergraduate' ? true : false}
                             style={{width:'100%'}}
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.year_graduated}
+                            value={String(student_Input.year_graduated).toLocaleUpperCase()}
                             onChange={onChange}
                             name="year_graduated"
                             label="Year Graduated:"
@@ -402,7 +421,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.major}
+                            value={String(student_Input.major).toLocaleUpperCase()}
                             onChange={onChange}
                             name="major"
                             label="Major: "
@@ -415,7 +434,7 @@ export default function StudentView({warningadmiss}) {
                         <TextField
                             style={{ width: '100%' }}
                             required={true}
-                            value={student_Input.address}
+                            value={String(student_Input.address).toLocaleUpperCase()}
                             onChange={onChange}
                             name="address"
                             id="outlined-multiline-static"
@@ -428,7 +447,7 @@ export default function StudentView({warningadmiss}) {
                         <TextField
                             style={{ width: '100%' }}
                             size={'small'}
-                            value={student_Input.elem_school}
+                            value={String(student_Input.elem_school).toLocaleUpperCase()}
                             required={true}
                             onChange={onChange}
                             name="elem_school"
@@ -440,7 +459,7 @@ export default function StudentView({warningadmiss}) {
                         <TextField
                             style={{width:'100%'}}
                             size={'small'}
-                            value={student_Input.elem_year}
+                            value={String(student_Input.elem_year).toLocaleUpperCase()}
                             id="outlined-helperText"
                             required={true}
                             onChange={onChange}
@@ -455,7 +474,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.high_school}
+                            value={String(student_Input.high_school).toLocaleUpperCase()}
                             onChange={onChange}
                             name="high_school"
                             label="High School: "
@@ -468,7 +487,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.high_year}
+                            value={String(student_Input.high_year).toLocaleUpperCase()}
                             onChange={onChange}
                             name="high_year"
                             label="Year Graduated (High School): "
@@ -481,7 +500,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.tertiary}
+                            value={String(student_Input.tertiary).toLocaleUpperCase()}
                             onChange={onChange}
                             name="tertiary"
                             label="Tertiary: (If Transferee)"
@@ -524,7 +543,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.contact}
+                            value={String(student_Input.contact).toLocaleUpperCase()}
                             onChange={onChange}
                             name="contact"
                             label="Contact Number: "
@@ -537,7 +556,7 @@ export default function StudentView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             required={true}
-                            value={student_Input.email}
+                            value={String(student_Input.email).toLocaleUpperCase()}
                             onChange={onChange}
                             name="email"
                             label="Email Address: "

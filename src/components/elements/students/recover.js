@@ -139,7 +139,7 @@ export default function AccountRecover({warning}) {
                     style={{ width: '100%' }}
                     id="outlined-helperText"
                     onChange={onChangeRecover}
-                    value={userData_recovery.fname}
+                    value={String(userData_recovery.fname).toLocaleUpperCase()}
                     variant="outlined" />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -150,7 +150,7 @@ export default function AccountRecover({warning}) {
                     style={{ width: '100%', }}
                     id="outlined-helperText"
                     onChange={onChangeRecover}
-                    value={userData_recovery.mname}
+                    value={String(userData_recovery.mname).toLocaleUpperCase()}
                     variant="outlined" />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -162,7 +162,7 @@ export default function AccountRecover({warning}) {
                     style={{ width: '100%', }}
                     id="outlined-helperText"
                     onChange={onChangeRecover}
-                    value={userData_recovery.lname}
+                    value={String(userData_recovery.lname).toLocaleUpperCase()}
                     variant="outlined" />
             </Grid>
             {/* <Grid item xs={12} md={4} >
@@ -201,7 +201,7 @@ export default function AccountRecover({warning}) {
                     style={{ width: '100%' }}
                     id="outlined-helperText"
                     onChange={onChangeRecover}
-                    value={userData_recovery.email_rec}
+                    value={String(userData_recovery.email_rec).toLocaleUpperCase()}
                     variant="outlined" />
             </Grid>
             <Grid item xs={12} md={6}>

@@ -244,7 +244,7 @@ export default function ReviewView({warningadmiss}) {
                             size={'small'}
                             id="outlined-helperText"
                             disabled
-                            value={student_Input.lname}
+                            value={String(student_Input.lname).toUpperCase()}
                             variant="outlined"
                             />
                         </FormControl>
@@ -257,7 +257,7 @@ export default function ReviewView({warningadmiss}) {
                             style={{width:'100%',backgroundColor:'#c8d6e5'}}
                             size={'small'}
                             id="outlined-helperText"
-                            value={student_Input.fname}
+                            value={String(student_Input.fname).toUpperCase()}
                             disabled
                             name="fname"
                             variant="outlined"
@@ -272,7 +272,7 @@ export default function ReviewView({warningadmiss}) {
                             style={{width:'100%',backgroundColor:'#c8d6e5'}}
                             size={'small'}
                             id="outlined-helperText"
-                            value={student_Input.mname}
+                            value={String(student_Input.mname).toUpperCase()}
                             disabled
                             name="mname"
                             variant="outlined"/>
@@ -287,7 +287,7 @@ export default function ReviewView({warningadmiss}) {
                             style={{width:'100%',backgroundColor:'#c8d6e5'}}
                             size={'small'}
                             id="outlined-helperText"
-                            value={student_Input.entry_year}
+                            value={String(student_Input.entry_year).toUpperCase()}
                             disabled
                             name="entry_year"
                             variant="outlined"/>
@@ -301,7 +301,7 @@ export default function ReviewView({warningadmiss}) {
                             style={{width:'100%',backgroundColor:'#c8d6e5'}}
                                 size={'small'}
                                 id="outlined-helperText"
-                                value={student_Input.last_attn}
+                                value={String(student_Input.last_attn).toUpperCase()}
                                 disabled
                                 name="last_attn"
                                 variant="outlined" />
@@ -316,7 +316,7 @@ export default function ReviewView({warningadmiss}) {
                             style={{width:'100%',backgroundColor:'#c8d6e5'}}
                             size={'small'}
                             id="outlined-helperText"
-                            value={student_Input.gradStatus}
+                            value={String(student_Input.gradStatus).toUpperCase()}
                             disabled
                             variant="outlined"/>
                         </FormControl>
@@ -331,7 +331,7 @@ export default function ReviewView({warningadmiss}) {
                                 size={'small'}
                                 id="outlined-helperText"
                                 disabled
-                                value={student_Input.year_graduated}
+                                value={String(student_Input.year_graduated).toUpperCase()}
                                 name="year_graduated"
                                 variant="outlined"/>
                         </FormControl>
@@ -345,7 +345,7 @@ export default function ReviewView({warningadmiss}) {
                                 size={'small'}
                                 id="outlined-helperText"
                                 disabled
-                                value={student_Input.department}
+                                value={String(student_Input.department).toUpperCase()}
                                 variant="outlined"/>
                         </FormControl>
                     </Grid>
@@ -358,7 +358,7 @@ export default function ReviewView({warningadmiss}) {
                                 size={'small'}
                                 id="outlined-helperText"
                                 disabled
-                                value={student_Input.degree}
+                                value={String(student_Input.degree).toUpperCase()}
                                 name="degree"
                                 variant="outlined"/>
                         </FormControl>
@@ -372,7 +372,7 @@ export default function ReviewView({warningadmiss}) {
                                 size={'small'}
                                 id="outlined-helperText"
                                 disabled
-                                value={student_Input.major}
+                                value={String(student_Input.major).toUpperCase()}
                                 variant="outlined"/>
                         </FormControl>
                     </Grid>
@@ -522,7 +522,7 @@ export default function ReviewView({warningadmiss}) {
                             size={'small'}
                             disabled
                             id="outlined-helperText"
-                            value={Selected_tor}
+                            value={String(Selected_tor).toUpperCase()}
                             variant="outlined"/>
                         </FormControl>
                      
@@ -536,7 +536,7 @@ export default function ReviewView({warningadmiss}) {
                             size={'small'}
                             disabled
                             id="outlined-helperText"
-                            value={Selected_Cert}
+                            value={String(Selected_Cert).toUpperCase()}
                             variant="outlined"/>
                         </FormControl>
                     </Grid>
